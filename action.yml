@@ -1,0 +1,17 @@
+name: "auditor"
+description: "The Auditor"
+author: "Grant Birkinbine"
+inputs:
+  test:
+    description: test
+    default: test
+    required: true
+outputs:
+  test:
+    description: "test"
+branding:
+  icon: "lock"
+  color: "gray-dark"
+runs:
+  using: "node16"
+  main: "dist/index.js"
