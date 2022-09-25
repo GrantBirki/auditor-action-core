@@ -6,6 +6,7 @@ export function loadJsonDiff() {
 
     if (jsonDiff === null || jsonDiff === undefined) {
       core.setFailed('JSON_DIFF is not defined')
+      process.exit();
     }
 
     return JSON.parse(jsonDiff)
