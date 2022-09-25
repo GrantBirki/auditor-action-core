@@ -1,5 +1,6 @@
-detections:
-  - type: string
-    match: "user root"
+rules:
+  - type: string-exact
+    name: "Root User Detected"
+    pattern: "user root"
     message: root user detected - this is not allowed, please try again
     file_ext: '*'
