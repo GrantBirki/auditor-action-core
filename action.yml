@@ -28,15 +28,10 @@ runs:
       shell: bash
 
     - name: auditor
-      run: |
-        if [ ! -f git-diff-action-output.json ]; then
-          echo "No diff file found!"
-          exit 1
-        fi
-        export JSON_DIFF=$(cat git-diff-action-output.json)
-        node src/main.js
+      run: node src/main.js
       env:
         CONFIG: ${{ inputs.config }}
+        JSON_DIFF_PATH: git-diff-action-output.json
       shell: bash
 
     - name: cleanup
