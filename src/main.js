@@ -1,6 +1,7 @@
+import { loadConfig } from "./functions/load_config.mjs";
+
 export async function run() {
-  console.log(process.env.JSON_DIFF);
-  console.log(process.env.CONFIG);
+  loadConfig();
 }
 
 run()
