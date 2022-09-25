@@ -17,3 +17,6 @@ jobs:
 
       - uses: ./
         id: auditor-action-core
+        env:
+          CONFIG_PATH: config/auditor-sample.yml
+          JSON_DIFF_PATH: test/diff-sample.json
