@@ -27,6 +27,7 @@ runs:
       run: |
         mkdir -p $DIFF_OUTPUT_TMP_DIR
         echo "${{ steps.git-diff-action.outputs.json-diff }}" > "$DIFF_OUTPUT_TMP_DIR/diff.json"
+        ls -lah tmp/git-diff-actions/outputs
       shell: bash
 
     - name: install node modules
