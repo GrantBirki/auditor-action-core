@@ -23,3 +23,8 @@ runs:
       env:
         DIFF: ${{ steps.git-diff-action.outputs.json-diff }}
       shell: bash
+
+    - run: node src/main.js
+      env:
+        DIFF: ${{ steps.git-diff-action.outputs.json-diff }}
+      shell: bash
