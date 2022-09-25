@@ -21,13 +21,22 @@ runs:
       uses: GrantBirki/git-diff-action@v1.0.0
       id: git-diff-action
 
+    - name: save diff results to tmp
+      env:
+        DIFF_OUTPUT_TMP_DIR: tmp/git-diff-actions/outputs
+      run: |
+        mkdir -p $DIFF_OUTPUT_TMP_DIR
+        echo "${{ steps.git-diff-action.outputs.diff }}" > $DIFF_OUTPUT_TMP_DIR/diff.json
+      shell: bash
+
     - name: install node modules
       run: npm install
       shell: bash
 
-    - name: auditor 
-      run: node src/main.js
+    - name: auditor
+      run: |
+        export JSON_DIFF=$(cat tmp/git-diff-actions/outputs/diff.json)
+        node src/main.js
       env:
-        JSON_DIFF: ${{ steps.git-diff-action.outputs.json-diff }}
         CONFIG: ${{ inputs.config }}
       shell: bash
