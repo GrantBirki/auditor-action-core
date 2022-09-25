@@ -28,7 +28,7 @@ runs:
         ls -lah
         mkdir -p "$DIFF_OUTPUT_TMP_DIR"
         echo "${{ steps.git-diff-action.outputs.json-diff }}" > "$DIFF_OUTPUT_TMP_DIR/diff.json"
-        ls -lah
+        ls -lah git-diff-actions-tmp
       shell: bash
 
     - name: install node modules
@@ -37,7 +37,7 @@ runs:
 
     - name: auditor
       run: |
-        ls -lah
+        ls -lah git-diff-actions-tmp
         if [ ! -f git-diff-actions-tmp/outputs/diff.json ]; then
           echo "No diff file found!"
           exit 1
