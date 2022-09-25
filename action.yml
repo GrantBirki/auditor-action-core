@@ -18,18 +18,10 @@ runs:
         fetch-depth: 0 # needed to checkout all branches
 
     - name: git-diff-action
-      uses: GrantBirki/git-diff-action@v1.0.0
+      uses: GrantBirki/git-diff-action@v1.1.0
       id: git-diff-action
-
-    - name: save diff results to tmp
-      env:
-        DIFF_OUTPUT_TMP_DIR: git-diff-actions-tmp/outputs
-      run: |
-        ls -lah
-        mkdir -p "$DIFF_OUTPUT_TMP_DIR"
-        echo ${{ steps.git-diff-action.outputs.json-diff }} > "$DIFF_OUTPUT_TMP_DIR/diff.json"
-        ls -lah git-diff-actions-tmp
-      shell: bash
+      with:
+        json_diff_file_output: git-diff-action-output.json
 
     - name: install node modules
       run: npm install
@@ -37,13 +29,11 @@ runs:
 
     - name: auditor
       run: |
-        ls -lah git-diff-actions-tmp
-        ls -lah git-diff-actions-tmp/outputs
-        if [ ! -f git-diff-actions-tmp/outputs/diff.json ]; then
+        if [ ! -f git-diff-action-output.json ]; then
           echo "No diff file found!"
           exit 1
         fi
-        export JSON_DIFF=$(cat git-diff-actions-tmp/outputs/diff.json)
+        export JSON_DIFF=$(cat git-diff-action-output.json)
         node src/main.js
       env:
         CONFIG: ${{ inputs.config }}
