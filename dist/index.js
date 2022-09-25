@@ -6690,7 +6690,8 @@ var external_fs_ = __nccwpck_require__(747);
 
 function loadConfig() {
   try {
-    return js_yaml.load((0,external_fs_.readFileSync)(process.env.CONFIG, 'utf8'))
+    core.debug(`Loading config file: ${process.env.CONFIG_PATH}`)
+    return js_yaml.load((0,external_fs_.readFileSync)(process.env.CONFIG_PATH, 'utf8'))
   } catch (e) {
     core.setFailed(e.message)
     process.exit();
