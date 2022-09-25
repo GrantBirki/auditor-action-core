@@ -4,7 +4,8 @@ import {readFileSync} from 'fs'
 
 export function loadConfig() {
   try {
-    return yaml.load(readFileSync(process.env.CONFIG, 'utf8'))
+    core.debug(`Loading config file: ${process.env.CONFIG_PATH}`)
+    return yaml.load(readFileSync(process.env.CONFIG_PATH, 'utf8'))
   } catch (e) {
     core.setFailed(e.message)
     process.exit();
