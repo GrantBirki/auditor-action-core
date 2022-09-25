@@ -6704,6 +6704,7 @@ function loadConfig() {
 
 function loadJsonDiff() {
   try {
+    core.debug(`Loading JSON diff from ${process.env.JSON_DIFF_PATH}`)
     const raw = (0,external_fs_.readFileSync)(process.env.JSON_DIFF_PATH)
 
     // if the json diff file contents are empty, warn and exit
@@ -6721,15 +6722,97 @@ function loadJsonDiff() {
   }
 }
 
+;// CONCATENATED MODULE: ./src/functions/audit.mjs
+
+
+// Auditor function which checks if a line of git diff passes the configured rule set
+// :param config: the configuration object
+// :param content: a single line content from the git diff
+// Returns {rule: <rule>, passed: false} if the line fails the rule set
+// Returns {passed: true} if the line passes all rule sets
+function audit(config, content) {
+  for (const rule of config.rules) {
+    if (rule.type === 'regex') {
+      const regex = new RegExp(rule.pattern, 'g')
+      const matches = content.match(regex)
+
+      if (matches) {
+        return {
+          rule: rule,
+          passed: false
+        }
+      }
+    } else if (rule.type === 'string-exact') {
+      if (content.includes(rule.pattern)) {
+        return {
+          rule: rule,
+          passed: false
+        }
+      }
+    } else if (rule.type === 'string-case-insensitive') {
+      if (content.toLowerCase().includes(rule.pattern.toLowerCase())) {
+        return {
+          rule: rule,
+          passed: false
+        }
+      }
+    } else {
+      core.warning(`unknown rule type: ${rule.type}`)
+    }
+
+    // if we get here, the rule passed
+    return {
+      passed: true
+    }
+  }
+}
+
+;// CONCATENATED MODULE: ./src/functions/process_diff.mjs
+
+
+
+function processDiff(config, diff) {
+  var report = false
+  var message =
+    '### Auditor Results ⚠️\n\nThe **Auditor** has detected findings in your pull request\n\n'
+  var counter = 0
+
+  for (const file of diff.files) {
+    for (const chunk of file.chunks) {
+      for (const change of chunk.changes) {
+        // audit the line content with the ruleset
+        var result = audit(config, change.content)
+
+        if (result.passed) {
+          // go to the next line in the git diff if the line passes the rule set
+          continue
+        }
+
+        // if we get here, the rule failed
+        report = true
+        counter += 1
+        message += `- Alert #${counter}\n  - File: \`${file.path}\`\n  - Line: \`${change.lineAfter}\`\n  - Rule Name: ${result.rule.name}\n  - Rule Type: ${result.rule.type}\n  - Rule Pattern: ${result.rule.pattern}\n  - Message: ${result.rule.message}\n\n`
+      }
+    }
+  }
+
+  if (report) {
+    core.warning(message)
+    if (process.env.CI !== true) {
+      console.log('\n', message)
+    }
+  }
+}
+
 ;// CONCATENATED MODULE: ./src/main.js
+
 
 
 
 async function run() {
   const config = loadConfig()
   const diff = loadJsonDiff()
-  console.log(config)
-  console.log(diff)
+  processDiff(config, diff)
 }
 
 run()
