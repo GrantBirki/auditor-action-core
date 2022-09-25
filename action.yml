@@ -21,6 +21,10 @@ runs:
       uses: GrantBirki/git-diff-action@v1.0.0
       id: git-diff-action
 
+    - name: install node modules
+      run: npm install
+      shell: bash
+
     - name: auditor 
       run: node src/main.js
       env:
