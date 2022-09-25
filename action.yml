@@ -23,11 +23,11 @@ runs:
 
     - name: save diff results to tmp
       env:
-        DIFF_OUTPUT_TMP_DIR: tmp/git-diff-actions/outputs
+        DIFF_OUTPUT_TMP_DIR: ~/git-diff-actions-tmp/outputs
       run: |
         mkdir -p $DIFF_OUTPUT_TMP_DIR
         echo "${{ steps.git-diff-action.outputs.json-diff }}" > "$DIFF_OUTPUT_TMP_DIR/diff.json"
-        ls -lah tmp/git-diff-actions/outputs
+        ls -lah ~/git-diff-actions-tmp/outputs
       shell: bash
 
     - name: install node modules
@@ -36,13 +36,17 @@ runs:
 
     - name: auditor
       run: |
-        ls -lah tmp/git-diff-actions/outputs
-        if [ ! -f tmp/git-diff-actions/outputs/diff.json ]; then
+        ls -lah ~/git-diff-actions-tmp/outputs
+        if [ ! -f ~/git-diff-actions-tmp/outputs/diff.json ]; then
           echo "No diff file found!"
           exit 1
         fi
-        export JSON_DIFF=$(cat tmp/git-diff-actions/outputs/diff.json)
+        export JSON_DIFF=$(cat ~/git-diff-actions-tmp/outputs/diff.json)
         node src/main.js
       env:
         CONFIG: ${{ inputs.config }}
+      shell: bash
+
+    - name: cleanup
+      run: rm -rf ~/git-diff-actions-tmp
       shell: bash
