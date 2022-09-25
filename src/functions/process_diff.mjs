@@ -20,7 +20,7 @@ export function processDiff(config, diff) {
         // if we get here, the rule failed
         report = true
         counter += 1
-        message += `- Alert ${counter}\n  - File: \`${file.path}\`\n  - Line: \`${change.lineAfter}\`\n  - Rule Name: ${result.rule.name}\n  - Rule Type: ${result.rule.type}\n  - Rule Pattern: ${result.rule.pattern}\n  - Message: ${result.rule.message}\n\n`
+        message += `- Alert ${counter}\n  - File: \`${file.path}\`\n  - Line: \`${change.lineAfter}\`\n  - Rule Name: ${result.rule.name}\n  - Message: ${result.rule.message}\n  - Rule Type: \`${result.rule.type}\`\n  - Rule Pattern: \`${result.rule.pattern}\`\n\n`
       }
     }
   }
