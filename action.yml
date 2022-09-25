@@ -25,7 +25,7 @@ runs:
       env:
         DIFF_OUTPUT_TMP_DIR: ~/git-diff-actions-tmp/outputs
       run: |
-        mkdir -p $DIFF_OUTPUT_TMP_DIR
+        mkdir -p "$DIFF_OUTPUT_TMP_DIR"
         echo "${{ steps.git-diff-action.outputs.json-diff }}" > "$DIFF_OUTPUT_TMP_DIR/diff.json"
         ls -lah ~/git-diff-actions-tmp/outputs
       shell: bash
