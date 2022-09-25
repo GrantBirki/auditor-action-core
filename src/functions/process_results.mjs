@@ -21,7 +21,7 @@ export async function processResults(results) {
       core.warning(`The Auditor found ${results.counter} findings`)
     }
 
-    if (process.env.CI !== true) {
+    if (process.env.CI !== "true") {
       console.log('\n', results.message)
     }
   } else {
