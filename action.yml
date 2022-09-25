@@ -35,6 +35,7 @@ runs:
 
     - name: auditor
       run: |
+        ls -lah tmp/git-diff-actions/outputs
         if [ ! -f tmp/git-diff-actions/outputs/diff.json ]; then
           echo "No diff file found!"
           exit 1
