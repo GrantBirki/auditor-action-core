@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 
 // Auditor function which checks if a line of git diff passes the configured rule set
+// The Auditor will always return the first match for a line
 // :param config: the configuration object
 // :param content: a single line content from the git diff
 // Returns {rule: <rule>, passed: false} if the line fails the rule set
