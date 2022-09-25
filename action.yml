@@ -35,5 +35,5 @@ runs:
       shell: bash
 
     - name: cleanup
-      run: rm -rf git-diff-actions-tmp
+      run: rm git-diff-action-output.json
       shell: bash
