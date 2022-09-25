@@ -1,5 +1,6 @@
 export async function run() {
-  console.log('Hello world!');
+  console.log(process.ENV.JSON_DIFF);
+  console.log(process.ENV.CONFIG);
 }
 
 run()

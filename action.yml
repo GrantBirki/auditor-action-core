@@ -12,19 +12,18 @@ branding:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3.0.2
+    - name: checkout
+      uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3.0.2
       with:
         fetch-depth: 0 # needed to checkout all branches
 
-    - uses: GrantBirki/git-diff-action@v1.0.0
+    - name: git-diff-action
+      uses: GrantBirki/git-diff-action@v1.0.0
       id: git-diff-action
-      
-    - run: echo $DIFF
-      env:
-        DIFF: ${{ steps.git-diff-action.outputs.json-diff }}
-      shell: bash
 
-    - run: node src/main.js
+    - name: auditor 
+      run: node src/main.js
       env:
-        DIFF: ${{ steps.git-diff-action.outputs.json-diff }}
+        JSON_DIFF: ${{ steps.git-diff-action.outputs.json-diff }}
+        CONFIG: ${{ inputs.config }}
       shell: bash
