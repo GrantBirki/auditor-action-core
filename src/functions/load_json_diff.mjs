@@ -3,6 +3,7 @@ import {readFileSync} from 'fs'
 
 export function loadJsonDiff() {
   try {
+    core.debug(`Loading JSON diff from ${process.env.JSON_DIFF_PATH}`)
     const raw = readFileSync(process.env.JSON_DIFF_PATH)
 
     // if the json diff file contents are empty, warn and exit
