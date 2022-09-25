@@ -35,7 +35,11 @@ runs:
 
     - name: auditor
       run: |
-        export JSON_DIFF=$(cat tmp/git-diff-actions/outputs/diff.json || echo "could not load diff.json" && exit 1)
+        if [ ! -f tmp/git-diff-actions/outputs/diff.json ]; then
+          echo "No diff file found!"
+          exit 1
+        fi
+        export JSON_DIFF=$(cat tmp/git-diff-actions/outputs/diff.json)
         node src/main.js
       env:
         CONFIG: ${{ inputs.config }}
