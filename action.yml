@@ -1,11 +1,6 @@
 name: "auditor-action-core"
 description: "The Auditor Action's Core"
 author: "Grant Birkinbine"
-inputs:
-  config:
-    description: The path to the auditor's config file
-    default: config.yml
-    required: true
 branding:
   icon: "lock"
   color: "gray-dark"
