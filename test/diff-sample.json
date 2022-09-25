@@ -8,7 +8,7 @@
                     "type": "Chunk",
                     "toFileRange": {
                         "start": 1,
-                        "lines": 48
+                        "lines": 50
                     },
                     "fromFileRange": {
                         "start": 0,
@@ -254,6 +254,16 @@
                             "type": "AddedLine",
                             "lineAfter": 48,
                             "content": "user root"
+                        },
+                        {
+                            "type": "AddedLine",
+                            "lineAfter": 49,
+                            "content": "uSer roOt"
+                        },
+                        {
+                            "type": "AddedLine",
+                            "lineAfter": 50,
+                            "content": "user   root"
                         }
                     ]
                 }
