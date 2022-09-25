@@ -35,10 +35,10 @@ export function audit(config, content) {
     } else {
       core.warning(`unknown rule type: ${rule.type}`)
     }
+  }
 
-    // if we get here, the rule passed
-    return {
-      passed: true
-    }
+  // if we get here, the rule passed
+  return {
+    passed: true
   }
 }
