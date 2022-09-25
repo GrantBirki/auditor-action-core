@@ -19,7 +19,6 @@ jobs:
       # if on pull request
       - uses: ./
         if: github.event_name == 'pull_request'
-        id: auditor-action-core
         env:
           CONFIG_PATH: config/auditor-sample.yml
           JSON_DIFF_PATH: test/diff-sample.json
@@ -27,7 +26,6 @@ jobs:
       # if on push
       - uses: ./
         if: github.event_name == 'push'
-        id: auditor-action-core
         env:
           CONFIG_PATH: config/auditor-sample.yml
           JSON_DIFF_PATH: test/diff-sample.json
