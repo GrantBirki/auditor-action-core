@@ -3,7 +3,8 @@ import {readFileSync} from 'fs'
 
 export function loadJsonDiff() {
   try {
-    const raw = readFileSync(process.env.JSON_DIFF_PATH)
+    const raw = readFileSync("test/diff-sample.json")
+    // const raw = readFileSync(process.env.JSON_DIFF_PATH)
 
     // if the file contents are empty, warn and exit
     if (raw.length === 0) {
