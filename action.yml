@@ -1,4 +1,4 @@
-name: "the-auditor"
+name: "auditor-action"
 description: "The Auditor"
 author: "Grant Birkinbine"
 inputs:
@@ -27,7 +27,7 @@ runs:
       run: npm install
       shell: bash
 
-    - name: the-auditor
+    - name: auditor-action
       run: node src/main.js
       env:
         CONFIG: ${{ inputs.config }}

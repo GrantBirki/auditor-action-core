@@ -1,3 +1,3 @@
-# the-auditor
+# auditor-action
 
 > Alpha
