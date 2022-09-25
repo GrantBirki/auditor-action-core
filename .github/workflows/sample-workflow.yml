@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   sample:
@@ -15,8 +16,19 @@ jobs:
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3.0.2
 
+      # if on pull request
       - uses: ./
-        id: auditor-action-core
+        if: github.event_name == 'pull_request'
         env:
           CONFIG_PATH: config/auditor-sample.yml
           JSON_DIFF_PATH: test/diff-sample.json
+          ALERT_LEVEL: warn
+
+      # if on push
+      - uses: ./
+        if: github.event_name == 'push'
+        env:
+          CONFIG_PATH: config/auditor-sample.yml
+          JSON_DIFF_PATH: test/diff-sample.json
+          COMMENT_ON_PR: false
+          ALERT_LEVEL: warn

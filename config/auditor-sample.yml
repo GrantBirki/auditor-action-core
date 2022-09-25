@@ -1,5 +1,20 @@
-detections:
-  - type: string
-    match: "user root"
+rules:
+  - type: string-exact
+    name: "Root User Detected"
+    pattern: "user root"
     message: root user detected - this is not allowed, please try again
-    file_ext: '*'
+
+  - type: string-case-insensitive
+    name: "Root User Detected - Case Insensitive"
+    pattern: "UseR rOoT"
+    message: root user detected - nice try...
+
+  - type: regex
+    name: "Root User Detected - Regex"
+    pattern: "user\\s+root"
+    message: root user detected - gotcha with regex
+
+  - type: regex
+    name: "should not find anything"
+    pattern: "p{100}"
+    message: this should not match anything - if it did I broke

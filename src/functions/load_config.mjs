@@ -8,6 +8,6 @@ export function loadConfig() {
     return yaml.load(readFileSync(process.env.CONFIG_PATH, 'utf8'))
   } catch (e) {
     core.setFailed(e.message)
-    process.exit();
+    process.exit()
   }
 }
