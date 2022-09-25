@@ -1,6 +1,11 @@
 import * as core from '@actions/core'
+import yaml from 'js-yaml'
+import {readFileSync} from 'fs'
 
-export async function loadConfig() {
-  console.log('test')
-  core.setFailed('test failed')
+export function loadConfig() {
+  try {
+    return yaml.load(readFileSync(process.env.CONFIG, 'utf8'))
+  } catch (e) {
+    core.setFailed(e.message)
+  }
 }

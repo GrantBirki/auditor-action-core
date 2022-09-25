@@ -1,7 +1,8 @@
-import { loadConfig } from "./functions/load_config.mjs";
+import {loadConfig} from './functions/load_config.mjs'
 
 export async function run() {
-  loadConfig();
+  const config = loadConfig()
+  console.log(config)
 }
 
 run()
