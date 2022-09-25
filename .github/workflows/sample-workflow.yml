@@ -17,3 +17,5 @@ jobs:
 
       - uses: ./
         id: auditor
+        with:
+          config: config/auditor-sample.yml
