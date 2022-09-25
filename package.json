@@ -1,15 +1,17 @@
 {
-  "name": "auditor-action",
+  "name": "auditor-action-core",
   "version": "0.0.0",
   "private": true,
-  "description": "The Auditor",
+  "description": "The Auditor Core",
   "main": "lib/main.js",
   "type": "module",
   "scripts": {
     "format": "prettier --write '**/*.js'",
     "format-check": "prettier --check '**/*.js'",
     "lint": "eslint src/**/*.js",
-    "all": "npm run format && npm run lint"
+    "package": "NODE_OPTIONS=--openssl-legacy-provider ncc build src/main.js -o dist --source-map --license licenses.txt",
+    "all": "npm run format && npm run lint && npm run package",
+    "bundle": "npm run format && npm run package"
   },
   "repository": {
     "type": "git",
