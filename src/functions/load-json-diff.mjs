@@ -12,5 +12,6 @@ export function loadJsonDiff() {
     return JSON.parse(jsonDiff)
   } catch (e) {
     core.setFailed(e.message)
+    process.exit();
   }
 }
