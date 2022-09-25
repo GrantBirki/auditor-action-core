@@ -16,8 +16,10 @@ runs:
       with:
         fetch-depth: 0 # needed to checkout all branches
 
-    - run: echo config path ${{ inputs.config }}
-      shell: bash
-
-    - run: cat README.md
+    - uses: GrantBirki/git-diff-action@v1.0.0
+      id: git-diff-action
+      
+    - run: echo $DIFF
+      env:
+        DIFF: ${{ steps.git-diff-action.outputs.json-diff }}
       shell: bash
