@@ -4,6 +4,7 @@
   "private": true,
   "description": "The Auditor",
   "main": "lib/main.js",
+  "type": "module",
   "scripts": {
     "format": "prettier --write '**/*.js'",
     "format-check": "prettier --check '**/*.js'",
