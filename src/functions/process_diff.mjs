@@ -1,4 +1,3 @@
-import * as core from '@actions/core'
 import {audit} from './audit.mjs'
 
 export function processDiff(config, diff) {
@@ -26,10 +25,9 @@ export function processDiff(config, diff) {
     }
   }
 
-  if (report) {
-    core.warning(message)
-    if (process.env.CI !== true) {
-      console.log('\n', message)
-    }
+  return {
+    report: report,
+    message: message,
+    counter: counter
   }
 }
