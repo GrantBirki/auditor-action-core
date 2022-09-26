@@ -13836,7 +13836,7 @@ async function label(config, action) {
           label
         })
       } catch (e) {
-        core.debug(`failed to remove label: ${label} - error: ${e}`)
+        core.warning(`failed to remove label: ${label} - error: ${e}`)
       }
     }
     return
