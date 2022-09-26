@@ -15,7 +15,7 @@ rules:
     pattern: "user\\s+root" # the regex pattern to use for matching (global matchl for the line contents)
     message: root user detected - gotcha with regex
 
-  - name: "should not find anything"
+  - name: should not find anything
     type: regex
     pattern: "p{100}"
     message: this should not match anything - if it did I broke
