@@ -1,20 +1,25 @@
 import * as core from '@actions/core'
 
 import {comment} from './comment.mjs'
+import {label} from './label.mjs'
 // import {annotate} from './annotate.mjs'
 
-export async function processResults(results) {
-  const alertLevel = process.env.ALERT_LEVEL || 'fail'
-  const shouldComment = process.env.COMMENT_ON_PR || 'true'
+export async function processResults(config, results) {
+  const alertLevel = config?.global_options?.alert_level || 'fail'
+  const shouldComment = config?.global_options?.comment_on_pr ?? true
   // const shouldAnnotate = process.env.ANNOTATE_PR || 'true'
 
   if (results.report) {
-    if (shouldComment === 'true') {
+    core.setOutput('violation_count', results.counter)
+
+    if (shouldComment === true) {
       await comment(results.message)
     }
 
+    await label(config, 'add')
+
     // if (shouldAnnotate === 'true') {
-    //   await annotate(results.annotations)
+    //   await annotate(config, results.annotations)
     // }
 
     if (alertLevel === 'fail') {
@@ -30,7 +35,11 @@ export async function processResults(results) {
     if (process.env.CI !== 'true') {
       console.log('\n', results.message)
     }
+
+    core.setOutput('passed', 'false')
   } else {
     core.info('✅ No findings were detected by the Auditor')
+    await label(config, 'remove')
+    core.setOutput('passed', 'true')
   }
 }
