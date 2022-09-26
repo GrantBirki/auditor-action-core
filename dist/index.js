@@ -13664,7 +13664,6 @@ async function excluded(path, config) {
   }
 
   for (const excludeRule of config.global_options?.exclude_regex || []) {
-    console.log(`excludeRule: ${excludeRule}`)
     const regex = new RegExp(excludeRule, 'g')
     const matches = path.match(regex)
 
