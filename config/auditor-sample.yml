@@ -1,19 +1,19 @@
 # rules is an array of auditor 'rules' that will be used to detect violations
 rules:
-  # - name: "Root User Detected" # the name of the rule
-  #   type: string-exact # an exact string match - case sensitive
-  #   pattern: "user root" # the string to match
-  #   message: root user detected - this is not allowed, please try again # the message to display if a match is found
+  - name: "Root User Detected" # the name of the rule
+    type: string-exact # an exact string match - case sensitive
+    pattern: "user root" # the string to match
+    message: root user detected - this is not allowed, please try again # the message to display if a match is found
 
-  # - name: "Root User Detected - Case Insensitive"
-  #   type: string-case-insensitive # a case insensitive string match
-  #   pattern: "UseR rOoT"
-  #   message: root user detected - nice try...
+  - name: "Root User Detected - Case Insensitive"
+    type: string-case-insensitive # a case insensitive string match
+    pattern: "UseR rOoT"
+    message: root user detected - nice try...
 
-  # - name: "Root User Detected - Regex"
-  #   type: regex # a regular expression match (regex)
-  #   pattern: "user\\s+root" # the regex pattern to use for matching (global matchl for the line contents)
-  #   message: root user detected - gotcha with regex
+  - name: "Root User Detected - Regex"
+    type: regex # a regular expression match (regex)
+    pattern: "user\\s+root" # the regex pattern to use for matching (global matchl for the line contents)
+    message: root user detected - gotcha with regex
 
   - name: should not find anything
     type: regex
@@ -25,8 +25,8 @@ global_options:
   alert_level: warn # whether to fail or warn the Actions workflow if a violation is found - default is fail
   comment_on_pr: true # whether to comment on the PR with the violations found - default is true
   # exclude_auditor_config: false # exclude the auditor config file from the audit (this file) - default is true
-  labels: # the labels to apply to the PR if a violation is found - comment out to disable
-    - alert
-    - auditor
+  # labels: # the labels to apply to the PR if a violation is found - comment out to disable
+  #   - alert
+  #   - auditor
   exclude_regex: # list of regex patterns to exclude files from the audit globally
    - "\\.md$"
