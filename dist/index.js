@@ -13829,7 +13829,7 @@ async function label(config, action) {
     for (const label of labels) {
       core.debug(`removing label from pr: ${label}`)
       try {
-        await octokit.issues.removeLabel({
+        await octokit.rest.issues.removeLabel({
           owner: owner,
           repo: repo,
           issue_number: issueNumber,
