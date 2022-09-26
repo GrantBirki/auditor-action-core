@@ -35,7 +35,7 @@ export function processDiff(config, diff) {
         // if we get here, the rule failed
         report = true
         counter += 1
-        message += `- Alert ${counter}\n  - File: \`${file.path}\`\n  - Line: [\`${change.lineAfter}\`](${base_url}/${file.path}#L${change.lineAfter})\n  - Rule Name: ${result.rule.name}\n  - Message: ${result.rule.message}\n  - Rule Type: \`${result.rule.type}\`\n  - Rule Pattern: \`${result.rule.pattern}\`\n\n`
+        message += `- Alert ${counter}\n  - **Rule**: ${result.rule.name}\n  - **Message**: ${result.rule.message}\n  - File: \`${file.path}\`\n  - Line: [\`${change.lineAfter}\`](${base_url}/${file.path}#L${change.lineAfter})\n  - Rule Type: \`${result.rule.type}\`\n  - Rule Pattern: \`${result.rule.pattern}\`\n\n`
 
         annotations.push({
           path: file.path,
