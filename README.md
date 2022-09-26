@@ -1,5 +1,7 @@
 # auditor-action-core ⚙️
 
+[![CodeQL](https://github.com/GrantBirki/auditor-action-core/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/GrantBirki/auditor-action-core/actions/workflows/codeql-analysis.yml)
+
 > The Action you are probably looking for is [auditor-action](https://github.com/GrantBirki/auditor-action)
 
 The core of the auditor-action. This is the package that does the heavy lifting. It is not meant to be used directly, but rather as a dependency of the auditor-action
