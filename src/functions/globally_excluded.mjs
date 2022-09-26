@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 
-export async function excluded(path, config) {
+export async function globallyExcluded(path, config) {
   if (config?.global_options === null || config?.global_options === undefined) {
     return false
   }

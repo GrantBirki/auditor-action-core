@@ -2,7 +2,7 @@ import * as github from '@actions/github'
 import * as core from '@actions/core'
 import {audit} from './audit.mjs'
 import {prData} from './pr_data.mjs'
-import {excluded} from './excluded.mjs'
+import {globallyExcluded} from './globally_excluded.mjs'
 
 export async function processDiff(config, diff) {
   var report = false
@@ -41,7 +41,7 @@ export async function processDiff(config, diff) {
       continue
     }
 
-    if ((await excluded(file.path, config)) === true) {
+    if ((await globallyExcluded(file.path, config)) === true) {
       continue
     }
 
