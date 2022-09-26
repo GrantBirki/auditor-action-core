@@ -54,7 +54,7 @@ export async function label(config, action) {
           label
         })
       } catch (e) {
-        core.debug(`failed to remove label: ${label}`)
+        core.debug(`failed to remove label: ${label} - error: ${e}`)
       }
     }
     return
