@@ -18,7 +18,7 @@
                         {
                             "type": "AddedLine",
                             "lineAfter": 1,
-                            "content": "root user"
+                            "content": "user root"
                         }
                     ]
                 }
