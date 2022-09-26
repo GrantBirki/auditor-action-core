@@ -13669,7 +13669,7 @@ async function excluded(path, config) {
 
     if (matches) {
       core.debug(
-        `skipping excluded path: ${path} - regex match: ${excludeRule}`
+        `skipping excluded path: ${path} - global regex match: ${excludeRule}`
       )
       return true
     }
