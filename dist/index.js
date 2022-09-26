@@ -13639,18 +13639,21 @@ function audit(config, content) {
 
 function processDiff(config, diff) {
   var report = false
-  var message =
-    '### Auditor Results ⚠️\n\nThe **Auditor** has detected findings in your pull request\n\n'
   var counter = 0
   var annotations = []
 
   var annotation_level
+  var icon
   const alertLevel = process.env.ALERT_LEVEL || 'fail'
   if (alertLevel === 'fail') {
     annotation_level = 'failure'
+    icon = '❌'
   } else {
     annotation_level = 'warning'
+    icon = '⚠️'
   }
+
+  var message = `### Auditor Results ${icon}\n\nThe **Auditor** has detected findings in your pull request\n\n`
 
   var base_url = 'https://github.com'
   if (process.env.CI === 'true') {
