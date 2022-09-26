@@ -47,11 +47,11 @@ export async function label(config, action) {
     for (const label of labels) {
       core.debug(`removing label from pr: ${label}`)
       try {
-        await octokit.rest.issues.removeLabel({
+        await octokit.issues.removeLabel({
           owner: owner,
           repo: repo,
           issue_number: issueNumber,
-          label
+          name: label
         })
       } catch (e) {
         core.warning(`failed to remove label: ${label} - error: ${e}`)
