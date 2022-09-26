@@ -27,6 +27,5 @@ global_options:
   # exclude_auditor_config: false # exclude the auditor config file from the audit (this file) - default is true
   labels: # the labels to apply to the PR if a violation is found - comment out to disable
     - alert
-    - auditor
   exclude_regex: # list of regex patterns to exclude files from the audit globally
    - "\\.md$"
