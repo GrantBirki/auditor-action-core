@@ -13779,7 +13779,41 @@ async function comment(message) {
   })
 }
 
+;// CONCATENATED MODULE: ./src/functions/label.mjs
+
+
+
+
+async function label(config) {
+  const labels = config.global_options?.labels || []
+
+  if (labels.length === 0) {
+    core.debug('no labels to add')
+    return
+  }
+
+  core.debug(`adding labels to pr: ${labels}`)
+
+  if (process.env.CI !== 'true') {
+    return
+  }
+
+  const token = core.getInput('github_token', {required: true})
+  const client = new github.GitHub(token)
+
+  const owner = github.context.repo.owner
+  const repo = github.context.repo.repo
+
+  await client.issues.addLabels({
+    labels,
+    owner,
+    repo,
+    issue_number: github.context.issue.number
+  })
+}
+
 ;// CONCATENATED MODULE: ./src/functions/process_results.mjs
+
 
 
 
@@ -13796,6 +13830,8 @@ async function processResults(config, results) {
     if (shouldComment === true) {
       await comment(results.message)
     }
+
+    label(config)
 
     // if (shouldAnnotate === 'true') {
     //   await annotate(config, results.annotations)

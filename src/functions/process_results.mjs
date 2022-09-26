@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 
 import {comment} from './comment.mjs'
+import {label} from './label.mjs'
 // import {annotate} from './annotate.mjs'
 
 export async function processResults(config, results) {
@@ -14,6 +15,8 @@ export async function processResults(config, results) {
     if (shouldComment === true) {
       await comment(results.message)
     }
+
+    label(config)
 
     // if (shouldAnnotate === 'true') {
     //   await annotate(config, results.annotations)
