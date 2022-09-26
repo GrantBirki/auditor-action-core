@@ -13639,6 +13639,15 @@ function processDiff(config, diff) {
   var message =
     '### Auditor Results ⚠️\n\nThe **Auditor** has detected findings in your pull request\n\n'
   var counter = 0
+  var annotations = []
+
+  var annotation_level
+  const alertLevel = process.env.ALERT_LEVEL || 'fail'
+  if (alertLevel === 'fail') {
+    annotation_level = 'failure'
+  } else {
+    annotation_level = 'warning'
+  }
 
   for (const file of diff.files) {
     for (const chunk of file.chunks) {
@@ -13655,6 +13664,16 @@ function processDiff(config, diff) {
         report = true
         counter += 1
         message += `- Alert ${counter}\n  - File: \`${file.path}\`\n  - Line: \`${change.lineAfter}\`\n  - Rule Name: ${result.rule.name}\n  - Message: ${result.rule.message}\n  - Rule Type: \`${result.rule.type}\`\n  - Rule Pattern: \`${result.rule.pattern}\`\n\n`
+
+        annotations.push({
+          path: file.path,
+          start_line: change.lineAfter,
+          end_line: change.lineAfter,
+          annotation_level: annotation_level,
+          message: result.rule.message,
+          start_column: 1,
+          end_column: 1
+        })
       }
     }
   }
@@ -13684,7 +13703,38 @@ async function comment(message) {
   })
 }
 
+;// CONCATENATED MODULE: ./src/functions/annotate.mjs
+
+
+
+async function annotate(annotations) {
+  var annotation_level
+  const alertLevel = process.env.ALERT_LEVEL || 'fail'
+  if (alertLevel === 'fail') {
+    annotation_level = 'failure'
+  } else {
+    annotation_level = 'warning'
+  }
+
+  const token = core.getInput('github_token', {required: true})
+  const octokit = github.getOctokit(token)
+  await octokit.rest.checks.create({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    name: 'The Auditor',
+    head_sha: github.context.sha,
+    status: 'completed',
+    conclusion: annotation_level,
+    output: {
+      title: 'The **Auditor** has detected findings in your pull request',
+      summary: 'Please review the findings and make the necessary changes',
+      annotations: annotations
+    }
+  })
+}
+
 ;// CONCATENATED MODULE: ./src/functions/process_results.mjs
+
 
 
 
@@ -13692,10 +13742,15 @@ async function comment(message) {
 async function processResults(results) {
   const alertLevel = process.env.ALERT_LEVEL || 'fail'
   const shouldComment = process.env.COMMENT_ON_PR || 'true'
+  const shouldAnnotate = process.env.ANNOTATE_PR || 'true'
 
   if (results.report) {
     if (shouldComment === 'true') {
       await comment(results.message)
+    }
+
+    if (shouldAnnotate === 'true') {
+      await annotate(results.message)
     }
 
     if (alertLevel === 'fail') {
