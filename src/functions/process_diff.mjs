@@ -1,3 +1,4 @@
+import * as github from '@actions/github'
 import {audit} from './audit.mjs'
 
 export function processDiff(config, diff) {
@@ -15,6 +16,11 @@ export function processDiff(config, diff) {
     annotation_level = 'warning'
   }
 
+  var base_url = 'https://github.com'
+  if (process.env.CI === 'true') {
+    base_url = `${base_url}/${github.context.repo.owner}/${github.context.repo.repo}/blob/${github.context.sha}`
+  }
+
   for (const file of diff.files) {
     for (const chunk of file.chunks) {
       for (const change of chunk.changes) {
@@ -29,7 +35,7 @@ export function processDiff(config, diff) {
         // if we get here, the rule failed
         report = true
         counter += 1
-        message += `- Alert ${counter}\n  - File: \`${file.path}\`\n  - Line: \`${change.lineAfter}\`\n  - Rule Name: ${result.rule.name}\n  - Message: ${result.rule.message}\n  - Rule Type: \`${result.rule.type}\`\n  - Rule Pattern: \`${result.rule.pattern}\`\n\n`
+        message += `- Alert ${counter}\n  - File: \`${file.path}\`\n  - Line: \`[${change.lineAfter}](${base_url}/${file.path}#L${change.lineAfter})\`\n  - Rule Name: ${result.rule.name}\n  - Message: ${result.rule.message}\n  - Rule Type: \`${result.rule.type}\`\n  - Rule Pattern: \`${result.rule.pattern}\`\n\n`
 
         annotations.push({
           path: file.path,
