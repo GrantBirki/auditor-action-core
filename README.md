@@ -24,6 +24,19 @@ Rather than using Actions inputs, this Action component uses environment variabl
 | `CONFIG_PATH` | yes | - | The path to the `auditor.yml` configuration file |
 | `JSON_DIFF_PATH` | yes | - | The path to the JSON diff file to load |
 
+## Inputs 📥
+
+| Name | Required? | Default | Description |
+| --- | --- | --- | --- |
+| `github_token` | yes | `${{ github.token }}` | The GitHub token to use for the Action (included for you by default) |
+
+## Outputs 📤
+
+| Name | Description |
+| --- | --- |
+| `passed` | Whether or not the audit passed - 'true' or 'false' |
+| `violation_count` | The number of violations found |
+
 ## Configuration 📝
 
 The following is an example of an `auditor.yml` configuration file will all available options:
