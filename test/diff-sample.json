@@ -23,6 +23,30 @@
                     ]
                 }
             ],
+            "path": "test/test.md"
+        },
+        {
+            "type": "AddedFile",
+            "chunks": [
+                {
+                    "type": "Chunk",
+                    "toFileRange": {
+                        "start": 1,
+                        "lines": 1
+                    },
+                    "fromFileRange": {
+                        "start": 0,
+                        "lines": 0
+                    },
+                    "changes": [
+                        {
+                            "type": "AddedLine",
+                            "lineAfter": 1,
+                            "content": "user root"
+                        }
+                    ]
+                }
+            ],
             "path": "config/auditor-sample.yml"
         },
         {

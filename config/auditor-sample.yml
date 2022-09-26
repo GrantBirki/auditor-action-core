@@ -21,3 +21,5 @@ rules:
 
 global_options:
   # exclude_auditor_config: false
+  exclude_regex:
+   - "\\.md$"

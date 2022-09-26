@@ -2,6 +2,7 @@ import * as github from '@actions/github'
 import * as core from '@actions/core'
 import {audit} from './audit.mjs'
 import {prData} from './pr_data.mjs'
+import {excluded} from './excluded.mjs'
 
 export async function processDiff(config, diff) {
   var report = false
@@ -37,6 +38,10 @@ export async function processDiff(config, diff) {
   for (const file of diff.files) {
     if (file.path === configPath && exclude_auditor_config === true) {
       core.debug(`Skipping config file (self): ${file.path}`)
+      continue
+    }
+
+    if ((await excluded(file.path, config)) === true) {
       continue
     }
 

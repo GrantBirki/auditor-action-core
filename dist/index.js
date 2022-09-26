@@ -13655,7 +13655,30 @@ async function prData() {
   return pr.data
 }
 
+;// CONCATENATED MODULE: ./src/functions/excluded.mjs
+
+
+async function excluded(path, config) {
+  if (config?.global_options === null || config?.global_options === undefined) {
+    return false
+  }
+
+  for (const excludeRule of config.global_options?.exclude_regex || []) {
+    console.log(`excludeRule: ${excludeRule}`)
+    const regex = new RegExp(excludeRule, 'g')
+    const matches = path.match(regex)
+
+    if (matches) {
+      core.debug(
+        `skipping excluded path: ${path} - regex match: ${excludeRule}`
+      )
+      return true
+    }
+  }
+}
+
 ;// CONCATENATED MODULE: ./src/functions/process_diff.mjs
+
 
 
 
@@ -13695,6 +13718,10 @@ async function processDiff(config, diff) {
   for (const file of diff.files) {
     if (file.path === configPath && exclude_auditor_config === true) {
       core.debug(`Skipping config file (self): ${file.path}`)
+      continue
+    }
+
+    if ((await excluded(file.path, config)) === true) {
       continue
     }
 
