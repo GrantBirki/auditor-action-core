@@ -1,21 +1,21 @@
 import * as core from '@actions/core'
 
 import {comment} from './comment.mjs'
-import {annotate} from './annotate.mjs'
+// import {annotate} from './annotate.mjs'
 
 export async function processResults(results) {
   const alertLevel = process.env.ALERT_LEVEL || 'fail'
   const shouldComment = process.env.COMMENT_ON_PR || 'true'
-  const shouldAnnotate = process.env.ANNOTATE_PR || 'true'
+  // const shouldAnnotate = process.env.ANNOTATE_PR || 'true'
 
   if (results.report) {
     if (shouldComment === 'true') {
       await comment(results.message)
     }
 
-    if (shouldAnnotate === 'true') {
-      await annotate(results.annotations)
-    }
+    // if (shouldAnnotate === 'true') {
+    //   await annotate(results.annotations)
+    // }
 
     if (alertLevel === 'fail') {
       core.error(results.message)

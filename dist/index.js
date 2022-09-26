@@ -13703,55 +13703,25 @@ async function comment(message) {
   })
 }
 
-;// CONCATENATED MODULE: ./src/functions/annotate.mjs
-
-
-
-async function annotate(annotations) {
-  var annotation_level
-  const alertLevel = process.env.ALERT_LEVEL || 'fail'
-  if (alertLevel === 'fail') {
-    annotation_level = 'failure'
-  } else {
-    annotation_level = 'neutral'
-  }
-
-  const token = core.getInput('github_token', {required: true})
-  const octokit = github.getOctokit(token)
-  await octokit.rest.checks.create({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    name: 'The Auditor',
-    head_sha: github.context.sha,
-    status: 'completed',
-    conclusion: annotation_level,
-    output: {
-      title: 'The **Auditor** has detected findings in your pull request',
-      summary: 'Please review the findings and make the necessary changes',
-      annotations: annotations
-    }
-  })
-}
-
 ;// CONCATENATED MODULE: ./src/functions/process_results.mjs
 
 
 
-
+// import {annotate} from './annotate.mjs'
 
 async function processResults(results) {
   const alertLevel = process.env.ALERT_LEVEL || 'fail'
   const shouldComment = process.env.COMMENT_ON_PR || 'true'
-  const shouldAnnotate = process.env.ANNOTATE_PR || 'true'
+  // const shouldAnnotate = process.env.ANNOTATE_PR || 'true'
 
   if (results.report) {
     if (shouldComment === 'true') {
       await comment(results.message)
     }
 
-    if (shouldAnnotate === 'true') {
-      await annotate(results.annotations)
-    }
+    // if (shouldAnnotate === 'true') {
+    //   await annotate(results.annotations)
+    // }
 
     if (alertLevel === 'fail') {
       core.error(results.message)
