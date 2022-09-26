@@ -31,5 +31,3 @@ jobs:
         env:
           CONFIG_PATH: config/auditor-sample.yml
           JSON_DIFF_PATH: test/diff-sample.json
-          COMMENT_ON_PR: false
-          ALERT_LEVEL: warn
