@@ -13585,6 +13585,8 @@ function loadJsonDiff() {
   }
 }
 
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(5438);
 ;// CONCATENATED MODULE: ./src/functions/audit.mjs
 
 
@@ -13634,11 +13636,29 @@ function audit(config, content) {
 ;// CONCATENATED MODULE: ./src/functions/process_diff.mjs
 
 
+
 function processDiff(config, diff) {
   var report = false
-  var message =
-    '### Auditor Results ⚠️\n\nThe **Auditor** has detected findings in your pull request\n\n'
   var counter = 0
+  var annotations = []
+
+  var annotation_level
+  var icon
+  const alertLevel = process.env.ALERT_LEVEL || 'fail'
+  if (alertLevel === 'fail') {
+    annotation_level = 'failure'
+    icon = '❌'
+  } else {
+    annotation_level = 'warning'
+    icon = '⚠️'
+  }
+
+  var message = `### Auditor Results ${icon}\n\nThe **Auditor** has detected findings in your pull request\n\n`
+
+  var base_url = 'https://github.com'
+  if (process.env.CI === 'true') {
+    base_url = `${base_url}/${github.context.repo.owner}/${github.context.repo.repo}/blob/${github.context.sha}`
+  }
 
   for (const file of diff.files) {
     for (const chunk of file.chunks) {
@@ -13654,7 +13674,17 @@ function processDiff(config, diff) {
         // if we get here, the rule failed
         report = true
         counter += 1
-        message += `- Alert ${counter}\n  - File: \`${file.path}\`\n  - Line: \`${change.lineAfter}\`\n  - Rule Name: ${result.rule.name}\n  - Message: ${result.rule.message}\n  - Rule Type: \`${result.rule.type}\`\n  - Rule Pattern: \`${result.rule.pattern}\`\n\n`
+        message += `- Alert ${counter}\n  - **Rule**: ${result.rule.name}\n  - **Message**: ${result.rule.message}\n  - File: \`${file.path}\`\n  - Line: [\`${change.lineAfter}\`](${base_url}/${file.path}#L${change.lineAfter})\n  - Rule Type: \`${result.rule.type}\`\n  - Rule Pattern: \`${result.rule.pattern}\`\n\n`
+
+        annotations.push({
+          path: file.path,
+          start_line: change.lineAfter,
+          end_line: change.lineAfter,
+          annotation_level: annotation_level,
+          message: result.rule.message,
+          start_column: 1,
+          end_column: 1
+        })
       }
     }
   }
@@ -13666,8 +13696,6 @@ function processDiff(config, diff) {
   }
 }
 
-// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(5438);
 ;// CONCATENATED MODULE: ./src/functions/comment.mjs
 
 
@@ -13688,15 +13716,21 @@ async function comment(message) {
 
 
 
+// import {annotate} from './annotate.mjs'
 
 async function processResults(results) {
   const alertLevel = process.env.ALERT_LEVEL || 'fail'
   const shouldComment = process.env.COMMENT_ON_PR || 'true'
+  // const shouldAnnotate = process.env.ANNOTATE_PR || 'true'
 
   if (results.report) {
     if (shouldComment === 'true') {
       await comment(results.message)
     }
+
+    // if (shouldAnnotate === 'true') {
+    //   await annotate(results.annotations)
+    // }
 
     if (alertLevel === 'fail') {
       core.error(results.message)
