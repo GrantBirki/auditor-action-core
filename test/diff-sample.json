@@ -3,46 +3,25 @@
     "files": [
         {
             "type": "RenamedFile",
-            "pathAfter": "README.txt",
-            "pathBefore": "README.md",
+            "pathAfter": "test2.txt",
+            "pathBefore": "test1.md",
             "chunks": [
                 {
                     "type": "Chunk",
                     "toFileRange": {
                         "start": 1,
-                        "lines": 5
+                        "lines": 1
                     },
                     "fromFileRange": {
                         "start": 1,
-                        "lines": 2
+                        "lines": 1
                     },
                     "changes": [
                         {
-                            "type": "UnchangedLine",
+                            "type": "AddedLine",
                             "lineBefore": 1,
                             "lineAfter": 1,
-                            "content": "# actions-sandbox"
-                        },
-                        {
-                            "type": "AddedLine",
-                            "lineAfter": 2,
-                            "content": ""
-                        },
-                        {
-                            "type": "UnchangedLine",
-                            "lineBefore": 2,
-                            "lineAfter": 3,
                             "content": "user root"
-                        },
-                        {
-                            "type": "AddedLine",
-                            "lineAfter": 4,
-                            "content": ""
-                        },
-                        {
-                            "type": "AddedLine",
-                            "lineAfter": 5,
-                            "content": "i don't like green beans"
                         }
                     ]
                 }
