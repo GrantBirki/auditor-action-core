@@ -3,6 +3,8 @@ import * as core from '@actions/core'
 import {audit} from './audit.mjs'
 import {prData} from './pr_data.mjs'
 import {globallyExcluded} from './globally_excluded.mjs'
+import {excluded} from './excluded.mjs'
+import {included} from './included.mjs'
 
 export async function processDiff(config, diff) {
   var report = false
@@ -52,6 +54,16 @@ export async function processDiff(config, diff) {
 
         if (result.passed) {
           // go to the next line in the git diff if the line passes the rule set
+          continue
+        }
+
+        if ((await excluded(result.rule, file.path)) === true) {
+          // if a violation was found, but there is an individual exclude rule, skip it
+          continue
+        }
+
+        if ((await included(result.rule, file.path)) === false) {
+          // if a violation was found, but it is NOT included via a regex rule, skip it
           continue
         }
 

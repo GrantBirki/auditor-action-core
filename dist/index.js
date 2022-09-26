@@ -13655,10 +13655,11 @@ async function prData() {
   return pr.data
 }
 
-;// CONCATENATED MODULE: ./src/functions/excluded.mjs
+;// CONCATENATED MODULE: ./src/functions/globally_excluded.mjs
 
 
-async function excluded(path, config) {
+async function globallyExcluded(path, config) {
+  // if the exclude rule is not define, return false as we are not excluding anything
   if (config?.global_options === null || config?.global_options === undefined) {
     return false
   }
@@ -13668,15 +13669,73 @@ async function excluded(path, config) {
     const matches = path.match(regex)
 
     if (matches) {
+      // if there is a match, the file is excluded
       core.debug(
         `skipping excluded path: ${path} - global regex match: ${excludeRule}`
       )
       return true
     }
   }
+
+  // if we get here, the file is not excluded
+  return false
+}
+
+;// CONCATENATED MODULE: ./src/functions/excluded.mjs
+
+
+async function excluded(rule, path) {
+  // if the exclude rule is not define, return false as we are not excluding anything
+  if (rule?.exclude_regex === null || rule?.exclude_regex === undefined) {
+    return false
+  }
+
+  for (const excludeRule of rule?.exclude_regex || []) {
+    const regex = new RegExp(excludeRule, 'g')
+    const matches = path.match(regex)
+
+    if (matches) {
+      // if there is a match, the file is excluded
+      core.debug(
+        `skipping excluded path: ${path} - individual rule regex match: ${excludeRule}`
+      )
+      return true
+    }
+  }
+
+  // if we get here, the file is not excluded
+  return false
+}
+
+;// CONCATENATED MODULE: ./src/functions/included.mjs
+
+
+async function included(rule, path) {
+  // if the include rule is not defined, return true as we will include by default
+  if (rule?.include_regex === null || rule?.include_regex === undefined) {
+    return true
+  }
+
+  for (const includeRule of rule?.include_regex || []) {
+    const regex = new RegExp(includeRule, 'g')
+    const matches = path.match(regex)
+
+    if (matches) {
+      // if there is a match, the file is explicitly included
+      core.debug(
+        `explicitly including path: ${path} - individual rule regex match: ${includeRule}`
+      )
+      return true
+    }
+  }
+
+  // if we get here, the file is not explicitly included
+  return false
 }
 
 ;// CONCATENATED MODULE: ./src/functions/process_diff.mjs
+
+
 
 
 
@@ -13720,7 +13779,7 @@ async function processDiff(config, diff) {
       continue
     }
 
-    if ((await excluded(file.path, config)) === true) {
+    if ((await globallyExcluded(file.path, config)) === true) {
       continue
     }
 
@@ -13731,6 +13790,16 @@ async function processDiff(config, diff) {
 
         if (result.passed) {
           // go to the next line in the git diff if the line passes the rule set
+          continue
+        }
+
+        if ((await excluded(result.rule, file.path)) === true) {
+          // if a violation was found, but there is an individual exclude rule, skip it
+          continue
+        }
+
+        if ((await included(result.rule, file.path)) === false) {
+          // if a violation was found, but it is NOT included via a regex rule, skip it
           continue
         }
 

@@ -4,6 +4,10 @@ rules:
     type: string-exact # an exact string match - case sensitive
     pattern: "user root" # the string to match
     message: root user detected - this is not allowed, please try again # the message to display if a match is found
+    include_regex: # a regex to match the file path against - if it matches, the rule will be applied
+      - "^.*\\.txt$"
+    exclude_regex: # a regex to match the file path against - if it matches, the rule will not be applied
+      - "^.*\\.log$"
 
   - name: "Root User Detected - Case Insensitive"
     type: string-case-insensitive # a case insensitive string match
