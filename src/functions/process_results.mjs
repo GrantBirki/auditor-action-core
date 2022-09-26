@@ -14,7 +14,7 @@ export async function processResults(results) {
     }
 
     if (shouldAnnotate === 'true') {
-      await annotate(results.message)
+      await annotate(results.annotations)
     }
 
     if (alertLevel === 'fail') {
