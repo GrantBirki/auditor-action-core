@@ -268,7 +268,7 @@
                     ]
                 }
             ],
-            "path": ".github/workflows/package-check.yml"
+            "path": "test/test.txt"
         },
         {
             "type": "ChangedFile",
