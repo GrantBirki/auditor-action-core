@@ -1,7 +1,10 @@
 import * as github from '@actions/github'
+import * as core from '@actions/core'
 import {audit} from './audit.mjs'
+import {prData} from './pr_data.mjs'
+import {excluded} from './excluded.mjs'
 
-export function processDiff(config, diff) {
+export async function processDiff(config, diff) {
   var report = false
   var counter = 0
   var annotations = []
@@ -21,10 +24,27 @@ export function processDiff(config, diff) {
 
   var base_url = 'https://github.com'
   if (process.env.CI === 'true') {
-    base_url = `${base_url}/${github.context.repo.owner}/${github.context.repo.repo}/blob/${github.context.sha}`
+    const pr = await prData()
+    base_url = `${base_url}/${github.context.repo.owner}/${github.context.repo.repo}/blob/${pr.head.ref}`
   }
 
+  var exclude_auditor_config = true
+  if (config.global_options?.exclude_auditor_config === false) {
+    exclude_auditor_config = false
+  }
+
+  const configPath = process.env.CONFIG_PATH
+
   for (const file of diff.files) {
+    if (file.path === configPath && exclude_auditor_config === true) {
+      core.debug(`Skipping config file (self): ${file.path}`)
+      continue
+    }
+
+    if ((await excluded(file.path, config)) === true) {
+      continue
+    }
+
     for (const chunk of file.chunks) {
       for (const change of chunk.changes) {
         // audit the line content with the ruleset

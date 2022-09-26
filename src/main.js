@@ -6,7 +6,7 @@ import {processResults} from './functions/process_results.mjs'
 export async function run() {
   const config = loadConfig()
   const diff = loadJsonDiff()
-  const results = processDiff(config, diff)
+  const results = await processDiff(config, diff)
   processResults(results)
 }
 

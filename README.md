@@ -1,3 +1,1 @@
-# auditor-action
-
-> Alpha
+# auditor-action-core
