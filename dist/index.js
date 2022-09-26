@@ -13633,11 +13633,34 @@ function audit(config, content) {
   }
 }
 
+;// CONCATENATED MODULE: ./src/functions/pr_data.mjs
+
+
+
+
+async function prData() {
+  const token = core.getInput('github_token', {required: true})
+  const octokit = github.getOctokit(token)
+  // Get the PR data
+  const pr = await octokit.rest.pulls.get({
+    ...github.context.repo,
+    pull_number: github.context.issue.number
+  })
+  if (pr.status !== 200) {
+    const message = `Could not retrieve PR info: ${pr.status}`
+    core.setFailed(message)
+    process.exit(1)
+  }
+
+  return pr.data
+}
+
 ;// CONCATENATED MODULE: ./src/functions/process_diff.mjs
 
 
 
-function processDiff(config, diff) {
+
+async function processDiff(config, diff) {
   var report = false
   var counter = 0
   var annotations = []
@@ -13657,7 +13680,8 @@ function processDiff(config, diff) {
 
   var base_url = 'https://github.com'
   if (process.env.CI === 'true') {
-    base_url = `${base_url}/${github.context.repo.owner}/${github.context.repo.repo}/blob/${github.context.sha}`
+    const pr = await prData()
+    base_url = `${base_url}/${github.context.repo.owner}/${github.context.repo.repo}/blob/${pr.head.ref}`
   }
 
   for (const file of diff.files) {
@@ -13759,7 +13783,7 @@ async function processResults(results) {
 async function run() {
   const config = loadConfig()
   const diff = loadJsonDiff()
-  const results = processDiff(config, diff)
+  const results = await processDiff(config, diff)
   processResults(results)
 }
 

@@ -1,7 +1,8 @@
 import * as github from '@actions/github'
 import {audit} from './audit.mjs'
+import {prData} from './pr_data.mjs'
 
-export function processDiff(config, diff) {
+export async function processDiff(config, diff) {
   var report = false
   var counter = 0
   var annotations = []
@@ -21,7 +22,8 @@ export function processDiff(config, diff) {
 
   var base_url = 'https://github.com'
   if (process.env.CI === 'true') {
-    base_url = `${base_url}/${github.context.repo.owner}/${github.context.repo.repo}/blob/${github.context.sha}`
+    const pr = await prData()
+    base_url = `${base_url}/${github.context.repo.owner}/${github.context.repo.repo}/blob/${pr.head.ref}`
   }
 
   for (const file of diff.files) {
