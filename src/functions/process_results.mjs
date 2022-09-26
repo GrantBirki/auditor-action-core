@@ -16,7 +16,7 @@ export async function processResults(config, results) {
       await comment(results.message)
     }
 
-    await label(config)
+    await label(config, 'add')
 
     // if (shouldAnnotate === 'true') {
     //   await annotate(config, results.annotations)
@@ -39,6 +39,7 @@ export async function processResults(config, results) {
     core.setOutput('passed', 'false')
   } else {
     core.info('✅ No findings were detected by the Auditor')
+    await label(config, 'remove')
     core.setOutput('passed', 'true')
   }
 }
