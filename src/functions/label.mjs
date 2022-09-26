@@ -22,7 +22,7 @@ export async function label(config) {
   const owner = context.repo.owner
   const repo = context.repo.repo
 
-  await octokit.issues.addLabels({
+  await octokit.rest.issues.addLabels({
     labels,
     owner,
     repo,

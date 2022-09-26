@@ -13804,7 +13804,7 @@ async function label(config) {
   const owner = github.context.repo.owner
   const repo = github.context.repo.repo
 
-  await octokit.issues.addLabels({
+  await octokit.rest.issues.addLabels({
     labels,
     owner,
     repo,
