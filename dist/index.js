@@ -13713,7 +13713,7 @@ async function annotate(annotations) {
   if (alertLevel === 'fail') {
     annotation_level = 'failure'
   } else {
-    annotation_level = 'warning'
+    annotation_level = 'neutral'
   }
 
   const token = core.getInput('github_token', {required: true})
