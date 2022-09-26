@@ -17,12 +17,12 @@ export async function label(config) {
   }
 
   const token = core.getInput('github_token', {required: true})
-  const client = new github.GitHub(token)
+  const octokit = github.getOctokit(token)
 
   const owner = context.repo.owner
   const repo = context.repo.repo
 
-  await client.issues.addLabels({
+  await octokit.issues.addLabels({
     labels,
     owner,
     repo,

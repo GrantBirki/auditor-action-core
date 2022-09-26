@@ -13799,12 +13799,12 @@ async function label(config) {
   }
 
   const token = core.getInput('github_token', {required: true})
-  const client = new github.GitHub(token)
+  const octokit = github.getOctokit(token)
 
   const owner = github.context.repo.owner
   const repo = github.context.repo.repo
 
-  await client.issues.addLabels({
+  await octokit.issues.addLabels({
     labels,
     owner,
     repo,
@@ -13831,7 +13831,7 @@ async function processResults(config, results) {
       await comment(results.message)
     }
 
-    label(config)
+    await label(config)
 
     // if (shouldAnnotate === 'true') {
     //   await annotate(config, results.annotations)

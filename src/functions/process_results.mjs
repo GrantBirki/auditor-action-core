@@ -16,7 +16,7 @@ export async function processResults(config, results) {
       await comment(results.message)
     }
 
-    label(config)
+    await label(config)
 
     // if (shouldAnnotate === 'true') {
     //   await annotate(config, results.annotations)
