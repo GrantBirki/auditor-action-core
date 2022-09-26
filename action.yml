@@ -12,6 +12,8 @@ inputs:
 outputs:
   passed:
     description: Whether or not the audit passed - 'true' or 'false'
+  violation_count:
+    description: The number of violations found
 runs:
   using: "node16"
   main: "dist/index.js"

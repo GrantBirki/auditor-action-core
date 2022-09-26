@@ -13791,6 +13791,8 @@ async function processResults(config, results) {
   // const shouldAnnotate = process.env.ANNOTATE_PR || 'true'
 
   if (results.report) {
+    core.setOutput('violation_count', results.counter)
+
     if (shouldComment === true) {
       await comment(results.message)
     }
