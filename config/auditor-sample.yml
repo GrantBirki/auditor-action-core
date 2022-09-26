@@ -18,3 +18,6 @@ rules:
     name: "should not find anything"
     pattern: "p{100}"
     message: this should not match anything - if it did I broke
+
+global_options:
+  # exclude_auditor_config: false

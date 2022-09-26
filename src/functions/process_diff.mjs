@@ -28,7 +28,7 @@ export async function processDiff(config, diff) {
   }
 
   var exclude_auditor_config = true
-  if (config.exclude_auditor_config === false) {
+  if (config.global_options?.exclude_auditor_config === false) {
     exclude_auditor_config = false
   }
 
@@ -37,6 +37,7 @@ export async function processDiff(config, diff) {
   for (const file of diff.files) {
     if (file.path === configPath && exclude_auditor_config === true) {
       core.debug(`Skipping config file (self): ${file.path}`)
+      continue
     }
 
     for (const chunk of file.chunks) {
