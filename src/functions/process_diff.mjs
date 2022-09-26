@@ -11,7 +11,7 @@ export async function processDiff(config, diff) {
 
   var annotation_level
   var icon
-  const alertLevel = process.env.ALERT_LEVEL || 'fail'
+  const alertLevel = config?.global_options?.alert_level || 'fail'
   if (alertLevel === 'fail') {
     annotation_level = 'failure'
     icon = '❌'

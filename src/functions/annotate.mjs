@@ -1,9 +1,9 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 
-export async function annotate(annotations) {
+export async function annotate(config, annotations) {
   var annotation_level
-  const alertLevel = process.env.ALERT_LEVEL || 'fail'
+  const alertLevel = config?.global_options?.alert_level || 'fail'
   if (alertLevel === 'fail') {
     annotation_level = 'failure'
   } else {

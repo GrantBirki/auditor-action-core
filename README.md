@@ -23,8 +23,6 @@ Rather than using Actions inputs, this Action component uses environment variabl
 | --- | --- | --- | --- |
 | `CONFIG_PATH` | yes | - | The path to the `auditor.yml` configuration file |
 | `JSON_DIFF_PATH` | yes | - | The path to the JSON diff file to load |
-| `ALERT_LEVEL` | yes | `fail` | The alert level to use when reporting violations. Can be `fail` or `warn` |
-| `COMMENT_ON_PR` | yes | `true` | Whether or not to comment on the PR. Can be `true` or `false` |
 
 ## Configuration 📝
 

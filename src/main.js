@@ -7,7 +7,7 @@ export async function run() {
   const config = loadConfig()
   const diff = loadJsonDiff()
   const results = await processDiff(config, diff)
-  processResults(results)
+  processResults(config, results)
 }
 
 run()

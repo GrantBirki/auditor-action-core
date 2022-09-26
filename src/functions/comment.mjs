@@ -3,6 +3,10 @@ import {context} from '@actions/github'
 import * as github from '@actions/github'
 
 export async function comment(message) {
+  if (process.env.CI !== 'true') {
+    return
+  }
+
   const token = core.getInput('github_token', {required: true})
   const octokit = github.getOctokit(token)
   // add a comment to the issue with the message

@@ -13691,7 +13691,7 @@ async function processDiff(config, diff) {
 
   var annotation_level
   var icon
-  const alertLevel = process.env.ALERT_LEVEL || 'fail'
+  const alertLevel = config?.global_options?.alert_level || 'fail'
   if (alertLevel === 'fail') {
     annotation_level = 'failure'
     icon = '❌'
@@ -13766,6 +13766,10 @@ async function processDiff(config, diff) {
 
 
 async function comment(message) {
+  if (process.env.CI !== 'true') {
+    return
+  }
+
   const token = core.getInput('github_token', {required: true})
   const octokit = github.getOctokit(token)
   // add a comment to the issue with the message
@@ -13782,18 +13786,18 @@ async function comment(message) {
 
 // import {annotate} from './annotate.mjs'
 
-async function processResults(results) {
-  const alertLevel = process.env.ALERT_LEVEL || 'fail'
-  const shouldComment = process.env.COMMENT_ON_PR || 'true'
+async function processResults(config, results) {
+  const alertLevel = config?.global_options?.alert_level || 'fail'
+  const shouldComment = config?.global_options?.comment_on_pr ?? true
   // const shouldAnnotate = process.env.ANNOTATE_PR || 'true'
 
   if (results.report) {
-    if (shouldComment === 'true') {
+    if (shouldComment === true) {
       await comment(results.message)
     }
 
     // if (shouldAnnotate === 'true') {
-    //   await annotate(results.annotations)
+    //   await annotate(config, results.annotations)
     // }
 
     if (alertLevel === 'fail') {
@@ -13824,7 +13828,7 @@ async function run() {
   const config = loadConfig()
   const diff = loadJsonDiff()
   const results = await processDiff(config, diff)
-  processResults(results)
+  processResults(config, results)
 }
 
 run()
