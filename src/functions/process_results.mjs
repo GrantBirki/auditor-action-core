@@ -30,7 +30,10 @@ export async function processResults(config, results) {
     if (process.env.CI !== 'true') {
       console.log('\n', results.message)
     }
+
+    core.setOutput('passed', 'false')
   } else {
     core.info('✅ No findings were detected by the Auditor')
+    core.setOutput('passed', 'true')
   }
 }
