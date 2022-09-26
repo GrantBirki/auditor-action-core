@@ -2,6 +2,32 @@
     "type": "GitDiff",
     "files": [
         {
+            "type": "RenamedFile",
+            "pathAfter": "test2.txt",
+            "pathBefore": "test1.md",
+            "chunks": [
+                {
+                    "type": "Chunk",
+                    "toFileRange": {
+                        "start": 1,
+                        "lines": 1
+                    },
+                    "fromFileRange": {
+                        "start": 1,
+                        "lines": 1
+                    },
+                    "changes": [
+                        {
+                            "type": "AddedLine",
+                            "lineBefore": 1,
+                            "lineAfter": 1,
+                            "content": "user root"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "type": "AddedFile",
             "chunks": [
                 {
