@@ -13660,6 +13660,7 @@ async function prData() {
 
 
 
+
 async function processDiff(config, diff) {
   var report = false
   var counter = 0
@@ -13684,7 +13685,18 @@ async function processDiff(config, diff) {
     base_url = `${base_url}/${github.context.repo.owner}/${github.context.repo.repo}/blob/${pr.head.ref}`
   }
 
+  var exclude_auditor_config = true
+  if (config.exclude_auditor_config === false) {
+    exclude_auditor_config = false
+  }
+
+  const configPath = process.env.CONFIG_PATH
+
   for (const file of diff.files) {
+    if (file.path === configPath && exclude_auditor_config === true) {
+      core.debug(`Skipping config file (self): ${file.path}`)
+    }
+
     for (const chunk of file.chunks) {
       for (const change of chunk.changes) {
         // audit the line content with the ruleset
