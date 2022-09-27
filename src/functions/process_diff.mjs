@@ -38,6 +38,12 @@ export async function processDiff(config, diff) {
   const configPath = process.env.CONFIG_PATH
 
   for (const file of diff.files) {
+
+    if (file.type === "DeletedFile") {
+      // Skip deleted files
+      continue
+    }
+
     // dynamically get the file path as renamed files use a different property
     var path
     if (file?.path) {
