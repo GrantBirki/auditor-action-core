@@ -2,6 +2,35 @@
     "type": "GitDiff",
     "files": [
         {
+            "type": "DeletedFile",
+            "chunks": [
+                {
+                    "type": "Chunk",
+                    "toFileRange": {
+                        "start": 0,
+                        "lines": 0
+                    },
+                    "fromFileRange": {
+                        "start": 1,
+                        "lines": 2
+                    },
+                    "changes": [
+                        {
+                            "type": "DeletedLine",
+                            "lineBefore": 1,
+                            "content": "user root"
+                        },
+                        {
+                            "type": "DeletedLine",
+                            "lineBefore": 2,
+                            "content": ""
+                        }
+                    ]
+                }
+            ],
+            "path": "test/test4.txt"
+        },
+        {
             "type": "ChangedFile",
             "chunks": [
                 {
