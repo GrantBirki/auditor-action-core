@@ -2,6 +2,53 @@
     "type": "GitDiff",
     "files": [
         {
+            "type": "ChangedFile",
+            "chunks": [
+                {
+                    "type": "Chunk",
+                    "toFileRange": {
+                        "start": 21,
+                        "lines": 24
+                    },
+                    "fromFileRange": {
+                        "start": 21,
+                        "lines": 3
+                    },
+                    "changes": [
+                        {
+                            "type": "UnchangedLine",
+                            "lineBefore": 21,
+                            "lineAfter": 21,
+                            "content": ""
+                        },
+                        {
+                            "type": "UnchangedLine",
+                            "lineBefore": 22,
+                            "lineAfter": 22,
+                            "content": " # Print the diff in JSON format"
+                        },
+                        {
+                            "type": "UnchangedLine",
+                            "lineBefore": 23,
+                            "lineAfter": 23,
+                            "content": " user root"
+                        },
+                        {
+                            "type": "DeletedLine",
+                            "lineBefore": 24,
+                            "content": "user root"
+                        },
+                        {
+                            "type": "AddedLine",
+                            "lineAfter": 24,
+                            "content": " env:"
+                        }
+                    ]
+                }
+            ],
+            "path": "test/test3.txt"
+        },
+        {
             "type": "RenamedFile",
             "pathAfter": "test2.txt",
             "pathBefore": "test1.md",
