@@ -38,8 +38,7 @@ export async function processDiff(config, diff) {
   const configPath = process.env.CONFIG_PATH
 
   for (const file of diff.files) {
-
-    if (file.type === "DeletedFile") {
+    if (file.type === 'DeletedFile') {
       // Skip deleted files
       continue
     }
@@ -63,7 +62,7 @@ export async function processDiff(config, diff) {
 
     for (const chunk of file.chunks) {
       for (const change of chunk.changes) {
-        if (change.type === "UnchangedLine" || change.type === "DeletedLine") {
+        if (change.type === 'UnchangedLine' || change.type === 'DeletedLine') {
           // skip deleted or unchanges lines
           continue
         }
