@@ -13774,6 +13774,11 @@ async function processDiff(config, diff) {
   const configPath = process.env.CONFIG_PATH
 
   for (const file of diff.files) {
+    if (file.type === 'DeletedFile') {
+      // Skip deleted files
+      continue
+    }
+
     // dynamically get the file path as renamed files use a different property
     var path
     if (file?.path) {
@@ -13793,6 +13798,11 @@ async function processDiff(config, diff) {
 
     for (const chunk of file.chunks) {
       for (const change of chunk.changes) {
+        if (change.type === 'UnchangedLine' || change.type === 'DeletedLine') {
+          // skip deleted or unchanges lines
+          continue
+        }
+
         // audit the line content with the ruleset
         var result = audit(config, change.content)
 
