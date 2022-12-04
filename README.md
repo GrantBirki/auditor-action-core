@@ -1,6 +1,6 @@
 # auditor-action-core ⚙️
 
-[![CodeQL](https://github.com/GrantBirki/auditor-action-core/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/GrantBirki/auditor-action-core/actions/workflows/codeql-analysis.yml)
+[![CodeQL](https://github.com/GrantBirki/auditor-action-core/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/GrantBirki/auditor-action-core/actions/workflows/codeql-analysis.yml) [![Check dist/](https://github.com/GrantBirki/auditor-action-core/actions/workflows/check-dist.yml/badge.svg)](https://github.com/GrantBirki/auditor-action-core/actions/workflows/check-dist.yml)
 
 > The Action you are probably looking for is [auditor-action](https://github.com/GrantBirki/auditor-action)
 
