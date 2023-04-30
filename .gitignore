@@ -1,11 +1,11 @@
 # Dependency directory
-node_modules
+node_modules/
 
 # Coverage directory used by tools like istanbul
-coverage
+coverage/
 
 # Optional npm cache directory
-.npm
+.npm/
 
 # Extra
-tmp
+tmp/
