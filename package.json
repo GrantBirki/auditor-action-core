@@ -19,8 +19,8 @@
   },
   "keywords": [
     "actions",
-    "node",
-    "setup"
+    "auditor",
+    "core"
   ],
   "author": "Grant Birkinbine",
   "license": "MIT",
