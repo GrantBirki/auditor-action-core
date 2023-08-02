@@ -79,7 +79,7 @@
         },
         {
             "type": "RenamedFile",
-            "pathAfter": "test2.txt",
+            "pathAfter": "test/test2.txt",
             "pathBefore": "test1.md",
             "chunks": [
                 {
