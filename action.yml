@@ -15,5 +15,5 @@ outputs:
   violation_count:
     description: The number of violations found
 runs:
-  using: "node16"
+  using: "node20"
   main: "dist/index.js"
