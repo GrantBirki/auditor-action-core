@@ -41,6 +41,12 @@ export async function processDiff(config, diff) {
   const configPath = process.env.CONFIG_PATH
   core.debug(`config_path: ${configPath}`)
 
+  // if diff.files is empty, exit
+  if (diff?.files?.length === 0 || diff?.files === undefined || diff?.files === null) {
+    core.warning(`Git diff is empty`)
+    process.exit(0)
+  }
+
   for (const file of diff.files) {
     if (file.type === 'DeletedFile') {
       // Skip deleted files
@@ -65,7 +71,22 @@ export async function processDiff(config, diff) {
       continue
     }
 
+    // check if file.chunks is empty
+    if (file?.chunks?.length === 0 || file?.chunks === undefined || file?.chunks === null) {
+      core.debug(`skipping file with no chunks: ${path}`)
+      continue
+    }
+
+    // loop through the chunks in the file
     for (const chunk of file.chunks) {
+
+      // check if chunk.changes is empty
+      if (chunk?.changes?.length === 0 || chunk?.changes === undefined || chunk?.changes === null) {
+        core.debug(`skipping chunk with no changes: ${path}`)
+        continue
+      }
+
+      // loop through the changes in the chunk
       for (const change of chunk.changes) {
         if (change.type === 'UnchangedLine' || change.type === 'DeletedLine') {
           // skip deleted or unchanges lines
