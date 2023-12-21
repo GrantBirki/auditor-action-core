@@ -908,6 +908,28 @@
                 }
             ],
             "path": "action.yml"
+        },
+        {
+            "type": "DeletedFile",
+            "chunks": [
+                {
+                    "type": "BinaryFilesChunk",
+                    "pathBefore": "vendor/cache/terratrash-1.0.0.gem",
+                    "pathAfter": "/dev/null"
+                }
+            ],
+            "path": "vendor/cache/terratrash-1.0.0.gem"
+        },
+        {
+            "type": "AddedFile",
+            "chunks": [
+                {
+                    "type": "BinaryFilesChunk",
+                    "pathBefore": "/dev/null",
+                    "pathAfter": "vendor/cache/terratrash-1.1.0.gem"
+                }
+            ],
+            "path": "vendor/cache/terratrash-1.1.0.gem"
         }
     ]
 }
