@@ -14,6 +14,9 @@ export async function processDiff(config, diff) {
   var annotation_level
   var icon
   const alertLevel = config?.global_options?.alert_level || 'fail'
+
+  core.debug(`alert_level: ${alertLevel}`)
+
   if (alertLevel === 'fail') {
     annotation_level = 'failure'
     icon = '❌'
@@ -36,6 +39,7 @@ export async function processDiff(config, diff) {
   }
 
   const configPath = process.env.CONFIG_PATH
+  core.debug(`config_path: ${configPath}`)
 
   for (const file of diff.files) {
     if (file.type === 'DeletedFile') {
@@ -57,6 +61,7 @@ export async function processDiff(config, diff) {
     }
 
     if ((await globallyExcluded(path, config)) === true) {
+      core.debug(`skipping globally excluded file: ${path}`)
       continue
     }
 
@@ -77,15 +82,24 @@ export async function processDiff(config, diff) {
 
         if ((await excluded(result.rule, path)) === true) {
           // if a violation was found, but there is an individual exclude rule, skip it
+          core.debug(
+            `violation found for path '${path}', but excluded via rule: '${result?.rule?.name}'`
+          )
           continue
         }
 
         if ((await included(result.rule, path)) === false) {
           // if a violation was found, but it is NOT included via a regex rule, skip it
+          core.debug(
+            `violation found for path '${path}', but not included via rule: '${result?.rule?.name}'`
+          )
           continue
         }
 
         // if we get here, the rule failed
+        core.debug(
+          `violation found for path '${path}' via rule: '${result?.rule?.name}'`
+        )
         report = true
         counter += 1
         message += `- Alert ${counter}\n  - **Rule**: ${result.rule.name}\n  - **Message**: ${result.rule.message}\n  - File: \`${path}\`\n  - Line: [\`${change.lineAfter}\`](${base_url}/${path}#L${change.lineAfter})\n  - Rule Type: \`${result.rule.type}\`\n  - Rule Pattern: \`${result.rule.pattern}\`\n\n`

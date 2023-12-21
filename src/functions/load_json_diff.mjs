@@ -3,20 +3,26 @@ import {readFileSync} from 'fs'
 
 export function loadJsonDiff() {
   try {
-    core.debug(`Loading JSON diff from ${process.env.JSON_DIFF_PATH}`)
-    const raw = readFileSync(process.env.JSON_DIFF_PATH)
+    const jsonDiffPath = process.env.JSON_DIFF_PATH
+    core.debug(`Loading JSON diff from ${jsonDiffPath}`)
+    const raw = readFileSync(jsonDiffPath)
 
     // if the json diff file contents are empty, warn and exit
-    if (raw.length === 0) {
-      core.warning(
-        `JSON diff file is empty - file: ${process.env.JSON_DIFF_PATH}`
-      )
+    if (raw.length === 0 || raw === undefined || raw === null) {
+      core.warning(`JSON diff file is empty - file: ${jsonDiffPath}`)
       process.exit(0)
     }
 
-    return JSON.parse(raw)
+    const diff = JSON.parse(raw)
+
+    // log the entire diff for debug purposes
+    core.debug(`========== JSON DIFF ==========`)
+    core.debug(JSON.stringify(diff))
+    core.debug(`===============================`)
+
+    return diff
   } catch (e) {
     core.setFailed(e.message)
-    process.exit()
+    process.exit(1)
   }
 }
