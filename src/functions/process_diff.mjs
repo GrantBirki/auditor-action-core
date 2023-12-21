@@ -42,7 +42,11 @@ export async function processDiff(config, diff) {
   core.debug(`config_path: ${configPath}`)
 
   // if diff.files is empty, exit
-  if (diff?.files?.length === 0 || diff?.files === undefined || diff?.files === null) {
+  if (
+    diff?.files?.length === 0 ||
+    diff?.files === undefined ||
+    diff?.files === null
+  ) {
     core.warning(`Git diff is empty`)
     process.exit(0)
   }
@@ -72,16 +76,23 @@ export async function processDiff(config, diff) {
     }
 
     // check if file.chunks is empty
-    if (file?.chunks?.length === 0 || file?.chunks === undefined || file?.chunks === null) {
+    if (
+      file?.chunks?.length === 0 ||
+      file?.chunks === undefined ||
+      file?.chunks === null
+    ) {
       core.debug(`skipping file with no chunks: ${path}`)
       continue
     }
 
     // loop through the chunks in the file
     for (const chunk of file.chunks) {
-
       // check if chunk.changes is empty
-      if (chunk?.changes?.length === 0 || chunk?.changes === undefined || chunk?.changes === null) {
+      if (
+        chunk?.changes?.length === 0 ||
+        chunk?.changes === undefined ||
+        chunk?.changes === null
+      ) {
         core.debug(`skipping chunk with no changes: ${path}`)
         continue
       }
