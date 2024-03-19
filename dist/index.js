@@ -34939,7 +34939,8 @@ async function processDiff(config, diff) {
   return {
     report: report,
     message: message,
-    counter: counter
+    counter: counter,
+    annotations: annotations
   }
 }
 
