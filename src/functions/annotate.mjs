@@ -10,6 +10,14 @@ export async function annotate(config, annotations) {
     annotation_level = 'neutral'
   }
 
+  core.debug(`======== annotate ========`)
+  core.debug(`annotation_level: ${annotation_level}`)
+  core.debug(`owner: ${github.context.repo.owner}`)
+  core.debug(`repo: ${github.context.repo.repo}`)
+  core.debug(`head_sha: ${github.context.sha}`)
+  core.debug(`annotations: ${JSON.stringify(annotations)}`)
+  core.debug(`====== end annotate ======`)
+
   const token = core.getInput('github_token', {required: true})
   const octokit = github.getOctokit(token)
   await octokit.rest.checks.create({
@@ -18,11 +26,13 @@ export async function annotate(config, annotations) {
     name: 'The Auditor',
     head_sha: github.context.sha,
     status: 'completed',
-    conclusion: annotation_level,
+    // conclusion: annotation_level,
     output: {
       title: 'The **Auditor** has detected findings in your pull request',
       summary: 'Please review the findings and make the necessary changes',
       annotations: annotations
     }
   })
+
+  core.debug(`annotations created`)
 }
