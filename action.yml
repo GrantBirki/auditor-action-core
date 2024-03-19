@@ -9,6 +9,10 @@ inputs:
     description: The GitHub token used to create an authenticated client - Provided for you by default!
     default: ${{ github.token }}
     required: true
+  annotate_pr:
+    description: Whether or not to annotate the PR with the audit results
+    default: "false"
+    required: false
 outputs:
   passed:
     description: Whether or not the audit passed - 'true' or 'false'

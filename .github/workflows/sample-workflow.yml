@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  # checks: write
+  checks: write
 
 jobs:
   sample:
@@ -17,6 +17,8 @@ jobs:
       # if on pull request
       - uses: ./
         if: github.event_name == 'pull_request'
+        with:
+          annotate_pr: true
         env:
           CONFIG_PATH: config/auditor-sample.yml
           JSON_DIFF_PATH: test/diff-sample.json
