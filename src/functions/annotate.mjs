@@ -26,7 +26,7 @@ export async function annotate(config, annotations) {
     name: 'The Auditor',
     head_sha: github.context.sha,
     status: 'completed',
-    // conclusion: annotation_level,
+    conclusion: annotation_level,
     output: {
       title: 'The **Auditor** has detected findings in your pull request',
       summary: 'Please review the findings and make the necessary changes',
