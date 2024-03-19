@@ -7,7 +7,7 @@ import {annotate} from './annotate.mjs'
 export async function processResults(config, results) {
   const alertLevel = config?.global_options?.alert_level || 'fail'
   const shouldComment = config?.global_options?.comment_on_pr ?? true
-  const shouldAnnotate = core.getBooleanInput('annotate')
+  const shouldAnnotate = core.getBooleanInput('annotate_pr')
 
   if (results.report) {
     core.setOutput('violation_count', results.counter)

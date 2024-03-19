@@ -18,7 +18,7 @@ jobs:
       - uses: ./
         if: github.event_name == 'pull_request'
         with:
-          annotate_pr: "true"
+          annotate_pr: true
         env:
           CONFIG_PATH: config/auditor-sample.yml
           JSON_DIFF_PATH: test/diff-sample.json
