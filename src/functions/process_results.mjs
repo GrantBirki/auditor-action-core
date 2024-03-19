@@ -2,12 +2,12 @@ import * as core from '@actions/core'
 
 import {comment} from './comment.mjs'
 import {label} from './label.mjs'
-// import {annotate} from './annotate.mjs'
+import {annotate} from './annotate.mjs'
 
 export async function processResults(config, results) {
   const alertLevel = config?.global_options?.alert_level || 'fail'
   const shouldComment = config?.global_options?.comment_on_pr ?? true
-  // const shouldAnnotate = process.env.ANNOTATE_PR || 'true'
+  const shouldAnnotate = core.getBooleanInput('annotate')
 
   if (results.report) {
     core.setOutput('violation_count', results.counter)
@@ -18,9 +18,10 @@ export async function processResults(config, results) {
 
     await label(config, 'add')
 
-    // if (shouldAnnotate === 'true') {
-    //   await annotate(config, results.annotations)
-    // }
+    if (shouldAnnotate === 'true') {
+      core.info('annotating the pull request with the findings')
+      await annotate(config, results.annotations)
+    }
 
     if (alertLevel === 'fail') {
       core.error(results.message)
