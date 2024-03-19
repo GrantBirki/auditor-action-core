@@ -29,6 +29,7 @@ Rather than using Actions inputs, this Action component uses environment variabl
 | Name | Required? | Default | Description |
 | --- | --- | --- | --- |
 | `github_token` | yes | `${{ github.token }}` | The GitHub token to use for the Action (included for you by default) |
+| `annotate_pr` | no | `"false"` | Whether or not to annotate the PR with the violations |
 
 ## Outputs 📤
 
