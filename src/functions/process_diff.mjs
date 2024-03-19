@@ -141,9 +141,9 @@ export async function processDiff(config, diff) {
           start_line: change.lineAfter,
           end_line: change.lineAfter,
           annotation_level: annotation_level,
-          message: result.rule.message,
-          start_column: 1,
-          end_column: 1
+          message: result.rule.message
+          // start_column: 1,
+          // end_column: 1
         })
       }
     }
