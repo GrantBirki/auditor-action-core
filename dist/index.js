@@ -35078,7 +35078,7 @@ async function processResults(config, results) {
 
     await label(config, 'add')
 
-    if (shouldAnnotate === 'true') {
+    if (shouldAnnotate === true) {
       core.info('annotating the pull request with the findings')
       await annotate(config, results.annotations)
     }
