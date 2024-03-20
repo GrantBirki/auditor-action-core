@@ -57,3 +57,4 @@ You will likely also need:
 
 - `pull-requests: write`
 - `contents: read`
+- `actions: read`
