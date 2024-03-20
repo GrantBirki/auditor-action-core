@@ -3,14 +3,21 @@ import * as core from '@actions/core'
 import {comment} from './comment.mjs'
 import {label} from './label.mjs'
 import {annotate} from './annotate.mjs'
+import fs from 'fs'
 
 export async function processResults(config, results) {
   const alertLevel = config?.global_options?.alert_level || 'fail'
   const shouldComment = config?.global_options?.comment_on_pr ?? true
   const shouldAnnotate = core.getBooleanInput('annotate_pr')
+  const writeResultsPath = core.getInput('write_results_path')
 
   if (results.report) {
     core.setOutput('violation_count', results.counter)
+
+    if (writeResultsPath && writeResultsPath !== '') {
+      core.info(`writing results to ${writeResultsPath}`)
+      fs.writeFileSync(writeResultsPath, results.message, 'utf8')
+    }
 
     if (shouldComment === true) {
       await comment(results.message)
