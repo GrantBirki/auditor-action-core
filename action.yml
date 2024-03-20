@@ -11,7 +11,7 @@ inputs:
     required: true
   annotate_pr:
     description: Whether or not to annotate the PR with the audit results
-    default: "false"
+    default: "true"
     required: false
   github_base_url:
     description: 'The base URL for the GitHub instance you are using'
