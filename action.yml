@@ -25,6 +25,22 @@ inputs:
     description: 'The path to the Auditor configuration file'
     default: 'config/auditor.yml'
     required: true
+  annotate_name:
+    description: 'The name of the annotation to name to use'
+    default: 'The Auditor'
+    required: true
+  annotate_title:
+    description: 'The title of the annotation to use'
+    default: 'The Auditor has detected findings in your pull request'
+    required: true
+  annotate_summary:
+    description: 'The summary of the annotation to use'
+    default: 'Please review the findings and make any necessary changes'
+    required: true
+  annotate_status:
+    description: 'The status of the annotation to use'
+    default: 'completed'
+    required: true
 outputs:
   passed:
     description: Whether or not the audit passed - 'true' or 'false'
