@@ -35059,10 +35059,30 @@ async function annotate(config, annotations) {
     annotation_level = 'neutral'
   }
 
+  // setup an octokit client
+  const token = core.getInput('github_token', {required: true})
+  const octokit = github.getOctokit(token)
+
   // Please note that this will only work for workflows triggered by the pull_request event
   const head_sha = github.context.payload.pull_request.head.sha
 
-  const checkRunId = github.context.payload.check_run.id
+  const checkRuns = await octokit.rest.checks.listForRef({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    ref: github.context.sha
+  })
+
+  const workflowName = github.context.workflow
+  const checkRun = checkRuns.data.check_runs.find(
+    run => run.name === workflowName
+  )
+
+  var checkRunId
+  if (checkRun) {
+    checkRunId = checkRun.id
+  } else {
+    core.setFailed(`check run not found for workflow ${workflowName}`)
+  }
 
   core.debug(`======== annotate ========`)
   core.debug(`annotation_level: ${annotation_level}`)
@@ -35073,8 +35093,6 @@ async function annotate(config, annotations) {
   core.debug(`checkRunId: ${checkRunId}`)
   core.debug(`====== end annotate ======`)
 
-  const token = core.getInput('github_token', {required: true})
-  const octokit = github.getOctokit(token)
   const response = await octokit.rest.checks.create({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
