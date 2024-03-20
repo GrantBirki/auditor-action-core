@@ -35117,13 +35117,20 @@ async function annotate(config, annotations) {
 
 
 
+
 async function processResults(config, results) {
   const alertLevel = config?.global_options?.alert_level || 'fail'
   const shouldComment = config?.global_options?.comment_on_pr ?? true
   const shouldAnnotate = core.getBooleanInput('annotate_pr')
+  const writeResultsPath = core.getInput('write_results_path')
 
   if (results.report) {
     core.setOutput('violation_count', results.counter)
+
+    if (writeResultsPath && writeResultsPath !== '') {
+      core.info(`writing results to ${writeResultsPath}`)
+      external_fs_.writeFileSync(writeResultsPath, results.report, 'utf8')
+    }
 
     if (shouldComment === true) {
       await comment(results.message)
