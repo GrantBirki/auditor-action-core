@@ -20,7 +20,7 @@ export async function annotate(config, annotations) {
 
   const token = core.getInput('github_token', {required: true})
   const octokit = github.getOctokit(token)
-  await octokit.rest.checks.create({
+  const response = await octokit.rest.checks.create({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     name: 'The Auditor',
@@ -33,6 +33,8 @@ export async function annotate(config, annotations) {
       annotations: annotations
     }
   })
+
+  core.debug(`annotations response: ${JSON.stringify(response, null, 2)}`)
 
   core.debug(`annotations created`)
 }
