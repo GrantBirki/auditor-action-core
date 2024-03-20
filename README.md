@@ -40,6 +40,14 @@ This package is the core of the auditor-action. It works by doing the following:
 
 To view the full list of configuration options, see the [auditor-action](https://github.com/GrantBirki/auditor-action#configuration-)'s section on configuration
 
+## Annotations ✅
+
+By default, this Action will leave annotations on pull requests with any findings. You can disable this by setting the `annotate_pr` input to `false`. If you do not want to use the default annotation settings, you can override them with the `annotate_name`, `annotate_title`, `annotate_summary`, and `annotate_status` inputs.
+
+### Example Annotation 📸
+
+![Annotation Example](docs/assets/annotations.png)
+
 ## Permissions 🛡
 
 ️If you are using the `annotate_pr` option, you will need to provide the `GITHUB_TOKEN` with the `checks: write` permission. This is because the `GITHUB_TOKEN` provided by GitHub Actions does not have the necessary permissions to annotate PRs. If you are not using the `annotate_pr` option, you do not need to worry about this.
