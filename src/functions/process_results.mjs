@@ -16,7 +16,7 @@ export async function processResults(config, results) {
 
     if (writeResultsPath && writeResultsPath !== '') {
       core.info(`writing results to ${writeResultsPath}`)
-      fs.writeFileSync(writeResultsPath, results.report, 'utf8')
+      fs.writeFileSync(writeResultsPath, results.message, 'utf8')
     }
 
     if (shouldComment === true) {

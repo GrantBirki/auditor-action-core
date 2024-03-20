@@ -35129,7 +35129,7 @@ async function processResults(config, results) {
 
     if (writeResultsPath && writeResultsPath !== '') {
       core.info(`writing results to ${writeResultsPath}`)
-      external_fs_.writeFileSync(writeResultsPath, results.report, 'utf8')
+      external_fs_.writeFileSync(writeResultsPath, results.message, 'utf8')
     }
 
     if (shouldComment === true) {
