@@ -35045,7 +35045,7 @@ async function annotate(config, annotations) {
   core.debug(`annotation_level: ${annotation_level}`)
   core.debug(`owner: ${github.context.repo.owner}`)
   core.debug(`repo: ${github.context.repo.repo}`)
-  core.debug(`head_sha: ${github.context.sha}`)
+  core.debug(`head_sha: ${github.context.payload.pull_request.head.sha}`)
   core.debug(`annotations: ${JSON.stringify(annotations)}`)
   core.debug(`====== end annotate ======`)
 
@@ -35055,7 +35055,7 @@ async function annotate(config, annotations) {
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     name: 'The Auditor',
-    head_sha: github.context.sha,
+    head_sha: github.context.payload.pull_request.head.sha, // Please note that this will only work for workflows triggered by the pull_request event
     status: 'completed',
     conclusion: annotation_level,
     output: {
