@@ -21,3 +21,4 @@ jobs:
           annotate_pr: true
           config_path: config/auditor-sample.yml
           json_diff_path: test/diff-sample.json
+          write_results_path: results.md

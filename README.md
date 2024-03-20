@@ -28,6 +28,7 @@ This package is the core of the auditor-action. It works by doing the following:
 | `annotate_title` | yes | `The Auditor has detected findings in your pull request` | The title of the annotation to use |
 | `annotate_summary` | yes | `Please review the findings and make any necessary changes` | The summary of the annotation to use |
 | `annotate_status` | yes | `completed` | The status of the annotation to use |
+| `write_results_path` | no | `""` | The path to write the markdown results to (for custom reporting) - Leave unset to disable writing results to a file |
 
 ## Outputs 📤
 

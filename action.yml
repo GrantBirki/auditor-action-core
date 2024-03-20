@@ -41,6 +41,10 @@ inputs:
     description: 'The status of the annotation to use'
     default: 'completed'
     required: true
+  write_results_path:
+    description: 'The path to write the markdown results to (for custom reporting) - Leave unset to disable writing results to a file'
+    default: ''
+    required: false
 outputs:
   passed:
     description: Whether or not the audit passed - 'true' or 'false'
