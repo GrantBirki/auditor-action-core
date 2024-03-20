@@ -14,6 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
       # if on pull request
       - uses: ./
         if: github.event_name == 'pull_request'
@@ -27,16 +33,16 @@ jobs:
         env:
           BRANCH_NAME: ${{ github.head_ref }}
         run: |
-          pwd
-          ls -l
-          cat results.md
-          cat results/expected_actions_result.md
-          sed -i '' -e 's/node20/<branch>/g' results/expected_actions_result.md
-          echo "updated expected_actions_result.md"
-          sed -i '' -e 's/$BRANCH_NAME/<branch>/g' results.md
-          echo "updated results.md with $BRANCH_NAME"
+          node -e "
+          const fs = require('fs');
+          let data = fs.readFileSync('results/expected_actions_result.md', 'utf8');
+          data = data.replace(/node20/g, '${{ env.BRANCH_NAME }}');
+          fs.writeFileSync('results/expected_actions_result.md', data);
+          "
+
           result_checksum=$(shasum -a 256 results.md)
           expected_checksum=$(shasum -a 256 results/expected_actions_result.md)
+
           if [ "$result_checksum" != "$expected_checksum" ]; then
             echo "❌ checksums do not match"
             echo "expected: $expected_checksum"
