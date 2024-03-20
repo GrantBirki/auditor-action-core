@@ -22,3 +22,20 @@ jobs:
           config_path: config/auditor-sample.yml
           json_diff_path: test/diff-sample.json
           write_results_path: results.md
+
+      - name: verify checksums
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
+        run: |
+          sed -i '' -e 's/node20/<branch>/g' results/expected_actions_result.md
+          sed -i '' -e 's/$BRANCH_NAME/<branch>/g' results.md
+          result_checksum=$(shasum -a 256 results.md)
+          expected_checksum=$(shasum -a 256 results/expected_actions_result.md)
+          if [ "$result_checksum" != "$expected_checksum" ]; then
+            echo "❌ checksums do not match"
+            echo "expected: $expected_checksum"
+            echo "..actual: $result_checksum"
+            exit 1
+          else
+            echo "✅ checksums match"
+          fi
