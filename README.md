@@ -28,7 +28,7 @@ Rather than using Actions inputs, this Action component uses environment variabl
 
 | Name | Required? | Default | Description |
 | --- | --- | --- | --- |
-| `github_token` | yes | `${{ github.token }}` | The GitHub token to use for the Action (included for you by default) |
+| `github_token` | yes | `${{ github.token }}` | The GitHub token to use for the Action (included for you by default). If you are using annotations on pull requests, you may need to use a GitHub App token with `checks:write` permissions instead |
 | `annotate_pr` | no | `"false"` | Whether or not to annotate the PR with the violations |
 
 ## Outputs 📤

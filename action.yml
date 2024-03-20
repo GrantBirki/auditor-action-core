@@ -6,7 +6,7 @@ branding:
   color: "gray-dark"
 inputs:
   github_token:
-    description: The GitHub token used to create an authenticated client - Provided for you by default!
+    description: 'The GitHub token used to create an authenticated client - Provided for you by default! If you are using annotations on pull requests, you may need to use a GitHub App token with checks:write permissions instead'
     default: ${{ github.token }}
     required: true
   annotate_pr:
