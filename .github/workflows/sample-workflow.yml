@@ -27,6 +27,10 @@ jobs:
         env:
           BRANCH_NAME: ${{ github.head_ref }}
         run: |
+          pwd
+          ls -l
+          cat results.md
+          cat results/expected_actions_result.md
           sed -i '' -e 's/node20/<branch>/g' results/expected_actions_result.md
           sed -i '' -e 's/$BRANCH_NAME/<branch>/g' results.md
           result_checksum=$(shasum -a 256 results.md)
