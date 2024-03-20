@@ -13,12 +13,15 @@ export async function annotate(config, annotations) {
   // Please note that this will only work for workflows triggered by the pull_request event
   const head_sha = github.context.payload.pull_request.head.sha
 
+  const checkRunId = github.context.payload.check_run.id
+
   core.debug(`======== annotate ========`)
   core.debug(`annotation_level: ${annotation_level}`)
   core.debug(`owner: ${github.context.repo.owner}`)
   core.debug(`repo: ${github.context.repo.repo}`)
   core.debug(`head_sha: ${head_sha}`)
   core.debug(`annotations: ${JSON.stringify(annotations)}`)
+  core.debug(`checkRunId: ${checkRunId}`)
   core.debug(`====== end annotate ======`)
 
   const token = core.getInput('github_token', {required: true})
