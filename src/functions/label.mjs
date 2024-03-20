@@ -55,12 +55,21 @@ export async function label(config, action) {
         })
       } catch (error) {
         // if the label doesn't exist, it's not an error
-        if (error?.includes('Label does not exist')) {
+        let errorMessage = ''
+        if (typeof error === 'string') {
+          errorMessage = error
+        } else if (error instanceof Error) {
+          errorMessage = error.message
+        } else {
+          errorMessage = String(error)
+        }
+        if (errorMessage.includes('Label does not exist')) {
           core.debug(
             `label not found: ${label} on pull request, skipping... OK`
           )
           continue
         }
+
         core.warning(`failed to remove label: ${label} - error: ${error}`)
       }
     }
