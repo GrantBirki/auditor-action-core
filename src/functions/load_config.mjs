@@ -4,10 +4,11 @@ import {readFileSync} from 'fs'
 
 export function loadConfig() {
   try {
-    core.debug(`Loading config file: ${process.env.CONFIG_PATH}`)
-    return yaml.load(readFileSync(process.env.CONFIG_PATH, 'utf8'))
+    const configPath = core.getInput('config_path', {required: true})
+    core.debug(`Loading config file: ${configPath}`)
+    return yaml.load(readFileSync(configPath, 'utf8'))
   } catch (e) {
     core.setFailed(e.message)
-    process.exit()
+    process.exit(1)
   }
 }

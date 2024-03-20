@@ -13,6 +13,18 @@ inputs:
     description: Whether or not to annotate the PR with the audit results
     default: "false"
     required: false
+  github_base_url:
+    description: 'The base URL for the GitHub instance you are using'
+    default: 'https://github.com'
+    required: true
+  json_diff_path:
+    description: 'The path to the JSON diff file to load'
+    default: 'diff.json'
+    required: true
+  config_path:
+    description: 'The path to the Auditor configuration file'
+    default: 'config/auditor.yml'
+    required: true
 outputs:
   passed:
     description: Whether or not the audit passed - 'true' or 'false'
