@@ -17,23 +17,14 @@ export async function annotate(config, annotations) {
   // Please note that this will only work for workflows triggered by the pull_request event
   const head_sha = github.context.payload.pull_request.head.sha
 
-  const checkRuns = await octokit.rest.checks.listForRef({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    ref: github.context.sha
+  const {jobsData} = await octokit.rest.actions.listJobsForWorkflowRun({
+    ...github.context.repo,
+    run_id: github.context.runId
   })
 
-  const workflowName = github.context.workflow
-  const checkRun = checkRuns.data.check_runs.find(
-    run => run.name === workflowName
-  )
-
-  var checkRunId
-  if (checkRun) {
-    checkRunId = checkRun.id
-  } else {
-    core.setFailed(`check run not found for workflow ${workflowName}`)
-  }
+  core.debug(`jobsData: ${JSON.stringify(jobsData, null, 2)}`)
+  const checkRunId =
+    jobsData.jobs.find(({name}) => name === 'sample')?.id ?? undefined
 
   core.debug(`======== annotate ========`)
   core.debug(`annotation_level: ${annotation_level}`)
