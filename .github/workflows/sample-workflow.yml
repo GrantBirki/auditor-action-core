@@ -40,8 +40,8 @@ jobs:
           fs.writeFileSync('results/expected_actions_result.md', data);
           "
 
-          result_checksum=$(shasum -a 256 results.md)
-          expected_checksum=$(shasum -a 256 results/expected_actions_result.md)
+          result_checksum=$(shasum -a 256 results.md | awk '{print $1}')
+          expected_checksum=$(shasum -a 256 results/expected_actions_result.md | awk '{print $1}')
 
           if [ "$result_checksum" != "$expected_checksum" ]; then
             echo "❌ checksums do not match"
