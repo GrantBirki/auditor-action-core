@@ -35073,15 +35073,14 @@ async function annotate(config, annotations) {
   const workflowName = github.context.workflow
   core.debug(`workflowName: ${workflowName}`)
 
-  // ============ get the check run id ============
   const {data} = await octokit.rest.actions.listJobsForWorkflowRun({
     ...github.context.repo,
     run_id: github.context.runId
   })
   core.debug(`jobsData: ${JSON.stringify(data, null, 2)}`)
   const checkRunId =
-    data.jobs.find(({name}) => name === workflowName)?.id ?? undefined
-  // ============ end get the check run id ============
+    data.jobs.find(({workflow_name}) => workflow_name === workflowName)?.id ??
+    undefined
 
   core.debug(`======== annotate ========`)
   core.debug(`annotation_level: ${annotation_level}`)
@@ -35092,11 +35091,12 @@ async function annotate(config, annotations) {
   core.debug(`checkRunId: ${checkRunId}`)
   core.debug(`====== end annotate ======`)
 
-  const response = await octokit.rest.checks.create({
+  const response = await octokit.rest.checks.update({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
+    check_run_id: checkRunId,
     name: core.getInput('annotate_name', {required: true}),
-    head_sha: head_sha,
+    // head_sha: head_sha,
     status: core.getInput('annotate_status', {required: true}),
     conclusion: annotation_level,
     output: {
