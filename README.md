@@ -15,21 +15,19 @@ This package is the core of the auditor-action. It works by doing the following:
 3. Uses the config file to process the JSON git diff and looks for violations
 4. Reports the violations as a comment on the PR depending on what environment variables are set
 
-## Environment Variables 🌎
-
-Rather than using Actions inputs, this Action component uses environment variables for configuration to make local testing easier
-
-| Name | Required? | Default | Description |
-| --- | --- | --- | --- |
-| `CONFIG_PATH` | yes | - | The path to the `auditor.yml` configuration file |
-| `JSON_DIFF_PATH` | yes | - | The path to the JSON diff file to load |
-
 ## Inputs 📥
 
 | Name | Required? | Default | Description |
 | --- | --- | --- | --- |
-| `github_token` | yes | `${{ github.token }}` | The GitHub token to use for the Action (included for you by default). If you are using annotations on pull requests, you may need to use a GitHub App token with `checks:write` permissions instead |
-| `annotate_pr` | no | `"false"` | Whether or not to annotate the PR with the violations |
+| `github_token` | yes | `${{ github.token }}` | The GitHub token to use for the Action - included for you by default! |
+| `annotate_pr` | no | `"true"` | Whether or not to annotate the PR with the violations |
+| `github_base_url` | yes | `https://github.com` | The base URL for the GitHub instance you are using |
+| `json_diff_path` | yes | `diff.json` | The path to the JSON diff file to load |
+| `config_path` | yes | `config/auditor.yml` | The path to the `auditor.yml` configuration file |
+| `annotate_name` | yes | `The Auditor` | The name of the annotation to name to use |
+| `annotate_title` | yes | `The Auditor has detected findings in your pull request` | The title of the annotation to use |
+| `annotate_summary` | yes | `Please review the findings and make any necessary changes` | The summary of the annotation to use |
+| `annotate_status` | yes | `completed` | The status of the annotation to use |
 
 ## Outputs 📤
 
