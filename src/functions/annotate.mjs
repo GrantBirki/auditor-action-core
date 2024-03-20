@@ -10,12 +10,19 @@ export async function annotate(config, annotations) {
     annotation_level = 'neutral'
   }
 
+  core.debug(`================== github.content ==================`)
+  core.debug(`github.context: ${JSON.stringify(github.context, null, 2)}`)
+  core.debug(`================== end github.content ==================`)
+
   // setup an octokit client
   const token = core.getInput('github_token', {required: true})
   const octokit = github.getOctokit(token)
 
   // Please note that this will only work for workflows triggered by the pull_request event
   const head_sha = github.context.payload.pull_request.head.sha
+
+  const workflowName = github.context.workflow
+  core.debug(`workflowName: ${workflowName}`)
 
   // ============ get the check run id ============
   const {data} = await octokit.rest.actions.listJobsForWorkflowRun({
@@ -24,7 +31,7 @@ export async function annotate(config, annotations) {
   })
   core.debug(`jobsData: ${JSON.stringify(data, null, 2)}`)
   const checkRunId =
-    data.jobs.find(({name}) => name === 'sample')?.id ?? undefined
+    data.jobs.find(({name}) => name === workflowName)?.id ?? undefined
   // ============ end get the check run id ============
 
   core.debug(`======== annotate ========`)
