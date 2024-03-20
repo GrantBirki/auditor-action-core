@@ -32,7 +32,9 @@ jobs:
           cat results.md
           cat results/expected_actions_result.md
           sed -i '' -e 's/node20/<branch>/g' results/expected_actions_result.md
+          echo "updated expected_actions_result.md"
           sed -i '' -e 's/$BRANCH_NAME/<branch>/g' results.md
+          echo "updated results.md with $BRANCH_NAME"
           result_checksum=$(shasum -a 256 results.md)
           expected_checksum=$(shasum -a 256 results/expected_actions_result.md)
           if [ "$result_checksum" != "$expected_checksum" ]; then
