@@ -34598,11 +34598,12 @@ var external_fs_ = __nccwpck_require__(7147);
 
 function loadConfig() {
   try {
-    core.debug(`Loading config file: ${process.env.CONFIG_PATH}`)
-    return js_yaml.load((0,external_fs_.readFileSync)(process.env.CONFIG_PATH, 'utf8'))
+    const configPath = core.getInput('config_path', {required: true})
+    core.debug(`Loading config file: ${configPath}`)
+    return js_yaml.load((0,external_fs_.readFileSync)(configPath, 'utf8'))
   } catch (e) {
     core.setFailed(e.message)
-    process.exit()
+    process.exit(1)
   }
 }
 
@@ -34612,7 +34613,7 @@ function loadConfig() {
 
 function loadJsonDiff() {
   try {
-    const jsonDiffPath = process.env.JSON_DIFF_PATH
+    const jsonDiffPath = core.getInput('json_diff_path', {required: true})
     core.debug(`Loading JSON diff from ${jsonDiffPath}`)
     const raw = (0,external_fs_.readFileSync)(jsonDiffPath)
 
@@ -34814,7 +34815,7 @@ async function processDiff(config, diff) {
 
   var message = `### Auditor Results ${icon}\n\nThe **Auditor** has detected findings in your pull request\n\n`
 
-  var base_url = 'https://github.com'
+  var base_url = core.getInput('github_base_url', {required: true})
   if (process.env.CI === 'true') {
     const pr = await prData()
     base_url = `${base_url}/${github.context.repo.owner}/${github.context.repo.repo}/blob/${pr.head.ref}`
@@ -34825,7 +34826,7 @@ async function processDiff(config, diff) {
     exclude_auditor_config = false
   }
 
-  const configPath = process.env.CONFIG_PATH
+  const configPath = core.getInput('config_path', {required: true})
   core.debug(`config_path: ${configPath}`)
 
   // if diff.files is empty, exit
@@ -34951,6 +34952,7 @@ async function processDiff(config, diff) {
 
 async function comment(message) {
   if (process.env.CI !== 'true') {
+    core.warning('Not running in CI, skipping comment')
     return
   }
 
@@ -35020,8 +35022,15 @@ async function label(config, action) {
           issue_number: issueNumber,
           name: label
         })
-      } catch (e) {
-        core.warning(`failed to remove label: ${label} - error: ${e}`)
+      } catch (error) {
+        // if the label doesn't exist, it's not an error
+        if (error?.includes('Label does not exist')) {
+          core.debug(
+            `label not found: ${label} on pull request, skipping... OK`
+          )
+          continue
+        }
+        core.warning(`failed to remove label: ${label} - error: ${error}`)
       }
     }
     return
@@ -35041,11 +35050,14 @@ async function annotate(config, annotations) {
     annotation_level = 'neutral'
   }
 
+  // Please note that this will only work for workflows triggered by the pull_request event
+  const head_sha = github.context.payload.pull_request.head.sha
+
   core.debug(`======== annotate ========`)
   core.debug(`annotation_level: ${annotation_level}`)
   core.debug(`owner: ${github.context.repo.owner}`)
   core.debug(`repo: ${github.context.repo.repo}`)
-  core.debug(`head_sha: ${github.context.payload.pull_request.head.sha}`)
+  core.debug(`head_sha: ${head_sha}`)
   core.debug(`annotations: ${JSON.stringify(annotations)}`)
   core.debug(`====== end annotate ======`)
 
@@ -35054,19 +35066,18 @@ async function annotate(config, annotations) {
   const response = await octokit.rest.checks.create({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
-    name: 'The Auditor',
-    head_sha: github.context.payload.pull_request.head.sha, // Please note that this will only work for workflows triggered by the pull_request event
-    status: 'completed',
+    name: core.getInput('annotate_name', {required: true}),
+    head_sha: head_sha,
+    status: core.getInput('annotate_status', {required: true}),
     conclusion: annotation_level,
     output: {
-      title: 'The Auditor has detected findings in your pull request',
-      summary: 'Please review the findings and make the necessary changes',
+      title: core.getInput('annotate_title', {required: true}),
+      summary: core.getInput('annotate_summary', {required: true}),
       annotations: annotations
     }
   })
 
   core.debug(`annotations response: ${JSON.stringify(response, null, 2)}`)
-
   core.debug(`annotations created`)
 }
 

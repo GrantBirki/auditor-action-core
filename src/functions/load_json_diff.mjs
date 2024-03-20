@@ -3,7 +3,7 @@ import {readFileSync} from 'fs'
 
 export function loadJsonDiff() {
   try {
-    const jsonDiffPath = process.env.JSON_DIFF_PATH
+    const jsonDiffPath = core.getInput('json_diff_path', {required: true})
     core.debug(`Loading JSON diff from ${jsonDiffPath}`)
     const raw = readFileSync(jsonDiffPath)
 

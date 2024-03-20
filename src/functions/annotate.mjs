@@ -10,11 +10,14 @@ export async function annotate(config, annotations) {
     annotation_level = 'neutral'
   }
 
+  // Please note that this will only work for workflows triggered by the pull_request event
+  const head_sha = github.context.payload.pull_request.head.sha
+
   core.debug(`======== annotate ========`)
   core.debug(`annotation_level: ${annotation_level}`)
   core.debug(`owner: ${github.context.repo.owner}`)
   core.debug(`repo: ${github.context.repo.repo}`)
-  core.debug(`head_sha: ${github.context.payload.pull_request.head.sha}`)
+  core.debug(`head_sha: ${head_sha}`)
   core.debug(`annotations: ${JSON.stringify(annotations)}`)
   core.debug(`====== end annotate ======`)
 
@@ -23,18 +26,17 @@ export async function annotate(config, annotations) {
   const response = await octokit.rest.checks.create({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
-    name: 'The Auditor',
-    head_sha: github.context.payload.pull_request.head.sha, // Please note that this will only work for workflows triggered by the pull_request event
-    status: 'completed',
+    name: core.getInput('annotate_name', {required: true}),
+    head_sha: head_sha,
+    status: core.getInput('annotate_status', {required: true}),
     conclusion: annotation_level,
     output: {
-      title: 'The Auditor has detected findings in your pull request',
-      summary: 'Please review the findings and make the necessary changes',
+      title: core.getInput('annotate_title', {required: true}),
+      summary: core.getInput('annotate_summary', {required: true}),
       annotations: annotations
     }
   })
 
   core.debug(`annotations response: ${JSON.stringify(response, null, 2)}`)
-
   core.debug(`annotations created`)
 }

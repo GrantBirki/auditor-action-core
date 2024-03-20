@@ -27,7 +27,7 @@ export async function processDiff(config, diff) {
 
   var message = `### Auditor Results ${icon}\n\nThe **Auditor** has detected findings in your pull request\n\n`
 
-  var base_url = 'https://github.com'
+  var base_url = core.getInput('github_base_url', {required: true})
   if (process.env.CI === 'true') {
     const pr = await prData()
     base_url = `${base_url}/${github.context.repo.owner}/${github.context.repo.repo}/blob/${pr.head.ref}`
@@ -38,7 +38,7 @@ export async function processDiff(config, diff) {
     exclude_auditor_config = false
   }
 
-  const configPath = process.env.CONFIG_PATH
+  const configPath = core.getInput('config_path', {required: true})
   core.debug(`config_path: ${configPath}`)
 
   // if diff.files is empty, exit

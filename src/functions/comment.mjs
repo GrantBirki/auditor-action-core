@@ -4,6 +4,7 @@ import * as github from '@actions/github'
 
 export async function comment(message) {
   if (process.env.CI !== 'true') {
+    core.warning('Not running in CI, skipping comment')
     return
   }
 

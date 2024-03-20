@@ -11,8 +11,36 @@ inputs:
     required: true
   annotate_pr:
     description: Whether or not to annotate the PR with the audit results
-    default: "false"
+    default: "true"
     required: false
+  github_base_url:
+    description: 'The base URL for the GitHub instance you are using'
+    default: 'https://github.com'
+    required: true
+  json_diff_path:
+    description: 'The path to the JSON diff file to load'
+    default: 'diff.json'
+    required: true
+  config_path:
+    description: 'The path to the Auditor configuration file'
+    default: 'config/auditor.yml'
+    required: true
+  annotate_name:
+    description: 'The name of the annotation to name to use'
+    default: 'The Auditor'
+    required: true
+  annotate_title:
+    description: 'The title of the annotation to use'
+    default: 'The Auditor has detected findings in your pull request'
+    required: true
+  annotate_summary:
+    description: 'The summary of the annotation to use'
+    default: 'Please review the findings and make any necessary changes'
+    required: true
+  annotate_status:
+    description: 'The status of the annotation to use'
+    default: 'completed'
+    required: true
 outputs:
   passed:
     description: Whether or not the audit passed - 'true' or 'false'
