@@ -53,8 +53,13 @@ export async function label(config, action) {
           issue_number: issueNumber,
           name: label
         })
-      } catch (e) {
-        core.warning(`failed to remove label: ${label} - error: ${e}`)
+      } catch (error) {
+        // if the label doesn't exist, it's not an error
+        if (error?.includes('Label does not exist')) {
+          core.debug(`label not found: ${label} on pull request, skipping... OK`)
+          continue
+        }
+        core.warning(`failed to remove label: ${label} - error: ${error}`)
       }
     }
     return
