@@ -35038,6 +35038,7 @@ async function label(config, action) {
           )
           continue
         }
+
         core.warning(`failed to remove label: ${label} - error: ${error}`)
       }
     }
