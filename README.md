@@ -38,8 +38,13 @@ This package is the core of the auditor-action. It works by doing the following:
 
 ## Configuration 📝
 
-The following is an example of an `auditor.yml` configuration file will all available options:
-
-### Configuration Options
-
 To view the full list of configuration options, see the [auditor-action](https://github.com/GrantBirki/auditor-action#configuration-)'s section on configuration
+
+## Permissions 🛡
+
+️If you are using the `annotate_pr` option, you will need to provide the `GITHUB_TOKEN` with the `checks: write` permission. This is because the `GITHUB_TOKEN` provided by GitHub Actions does not have the necessary permissions to annotate PRs. If you are not using the `annotate_pr` option, you do not need to worry about this.
+
+You will likely also need:
+
+- `pull-requests: write`
+- `contents: read`
