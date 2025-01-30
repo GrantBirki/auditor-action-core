@@ -10,7 +10,7 @@ export async function processDiff(config, diff) {
   var report = false
   var counter = 0
   var annotations = []
-  var requestedReviewers = []
+  var requested_reviewers = []
 
   var annotation_level
   var icon
@@ -147,11 +147,12 @@ export async function processDiff(config, diff) {
           // end_column: 1
         })
 
-        if (result.rule.requestedReviewers?.length > 0) {
+        // if the rule has an attribute requested_reviewers, add them to the list
+        if (result.rule?.requested_reviewers?.length > 0) {
           core.debug(
-            `noting the following reviewers are requested for this rule: ${result.rule.requestedReviewers}`
+            `noting the following reviewers are requested for this rule: ${result.rule.requested_reviewers}`
           )
-          requestedReviewers.push(...result.rule.requestedReviewers)
+          requested_reviewers.push(...result.rule.requested_reviewers)
         }
       }
     }
@@ -162,6 +163,6 @@ export async function processDiff(config, diff) {
     message: message,
     counter: counter,
     annotations: annotations,
-    requestedReviewers: requestedReviewers
+    requested_reviewers: requested_reviewers
   }
 }
