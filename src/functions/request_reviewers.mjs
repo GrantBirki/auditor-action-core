@@ -22,6 +22,12 @@ export async function requestReviewers(reviewers) {
     }
   }
 
+  // exit early if there are no reviewers
+  if (individual_reviewers.length === 0 && team_reviewers.length === 0) {
+    core.debug('no reviewers found, skipping request reviewers')
+    return
+  }
+
   const token = core.getInput('github_token', {required: true})
   const octokit = github.getOctokit(token)
 
