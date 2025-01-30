@@ -23,6 +23,9 @@ rules:
     type: regex
     pattern: "p{100}"
     message: this should not match anything - if it did I broke
+    requested_reviewers:
+      - "octocat"
+      - "org/team"
 
 # global configuration options
 global_options:

@@ -35,7 +35,7 @@ export async function processResults(config, results) {
 
     if (shouldRequestReviewers === true) {
       core.info('requesting the relevant reviewers on the pull request')
-      await requestReviewers(config, results.requestedReviewers)
+      await requestReviewers(config, results.requested_reviewers)
     }
 
     if (alertLevel === 'fail') {
