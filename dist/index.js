@@ -35332,6 +35332,13 @@ async function annotate(config, annotations) {
     core.debug(`annotations response: ${JSON.stringify(response, null, 2)}`)
     core.debug(`annotations created`)
   } catch (error) {
+    // if the error message contains "Resource not accessible by integration", log a custom message
+    if (error.message.includes('Resource not accessible by integration')) {
+      core.error(
+        'Please ensure you have "checks: write" permissions in your workflow. Or, perhaps the workflow is running in the context of a fork, in that case you will see this error as it is expected.'
+      )
+    }
+
     core.error(`error creating annotations: ${error} trace: ${error.stack}`)
     core.error(`annotations: ${JSON.stringify(annotations, null, 2)}`)
   }
