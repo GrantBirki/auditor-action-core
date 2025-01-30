@@ -9,7 +9,8 @@ import fs from 'fs'
 export async function processResults(config, results) {
   const alertLevel = config?.global_options?.alert_level || 'fail'
   const shouldComment = config?.global_options?.comment_on_pr ?? true
-  const shouldRequestReviewers = config?.global_options?.request_reviewers ?? true
+  const shouldRequestReviewers =
+    config?.global_options?.request_reviewers ?? true
   const shouldAnnotate = core.getBooleanInput('annotate_pr')
   const writeResultsPath = core.getInput('write_results_path')
 

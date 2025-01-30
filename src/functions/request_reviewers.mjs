@@ -25,6 +25,6 @@ export async function requestReviewers(reviewers) {
     ...context.repo,
     pull_number: pull_number,
     reviewers: individual_reviewers,
-    team_reviewers: team_reviewers,
+    team_reviewers: team_reviewers
   })
 }

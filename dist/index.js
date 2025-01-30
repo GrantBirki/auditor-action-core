@@ -35012,6 +35012,7 @@ async function processDiff(config, diff) {
   var report = false
   var counter = 0
   var annotations = []
+  var requestedReviewers = []
 
   var annotation_level
   var icon
@@ -35147,6 +35148,13 @@ async function processDiff(config, diff) {
           // start_column: 1,
           // end_column: 1
         })
+
+        if (result.rule.requestedReviewers?.length > 0) {
+          core.debug(
+            `noting the following reviewers are requested for this rule: ${result.rule.requestedReviewers}`
+          )
+          requestedReviewers.push(...result.rule.requestedReviewers)
+        }
       }
     }
   }
@@ -35155,7 +35163,8 @@ async function processDiff(config, diff) {
     report: report,
     message: message,
     counter: counter,
-    annotations: annotations
+    annotations: annotations,
+    requestedReviewers: requestedReviewers
   }
 }
 
@@ -35324,7 +35333,40 @@ async function annotate(config, annotations) {
   core.debug(`annotations created`)
 }
 
+;// CONCATENATED MODULE: ./src/functions/request_reviewers.mjs
+
+
+
+
+async function requestReviewers(reviewers) {
+  if (process.env.CI !== 'true') {
+    core.warning('Not running in CI, skipping request reviewers')
+    return
+  }
+
+  var individual_reviewers = []
+  var team_reviewers = []
+  for (reviewer in reviewers) {
+    if (reviewer.match(/^@?[A-Za-z0-9_]\/[A-Za-z0-9_]/)) {
+      team_reviewers.push(reviewer)
+    } else {
+      individual_reviewers.push(reviewer)
+    }
+  }
+
+  const token = core.getInput('github_token', {required: true})
+  const octokit = github.getOctokit(token)
+  // add a comment to the issue with the message
+  const response = await octokit.rest.pulls.requestReviewers({
+    ...github.context.repo,
+    pull_number: pull_number,
+    reviewers: individual_reviewers,
+    team_reviewers: team_reviewers
+  })
+}
+
 ;// CONCATENATED MODULE: ./src/functions/process_results.mjs
+
 
 
 
@@ -35335,6 +35377,8 @@ async function annotate(config, annotations) {
 async function processResults(config, results) {
   const alertLevel = config?.global_options?.alert_level || 'fail'
   const shouldComment = config?.global_options?.comment_on_pr ?? true
+  const shouldRequestReviewers =
+    config?.global_options?.request_reviewers ?? true
   const shouldAnnotate = core.getBooleanInput('annotate_pr')
   const writeResultsPath = core.getInput('write_results_path')
 
@@ -35355,6 +35399,11 @@ async function processResults(config, results) {
     if (shouldAnnotate === true) {
       core.info('annotating the pull request with the findings')
       await annotate(config, results.annotations)
+    }
+
+    if (shouldRequestReviewers === true) {
+      core.info('requesting the relevant reviewers on the pull request')
+      await requestReviewers(config, results.requestedReviewers)
     }
 
     if (alertLevel === 'fail') {

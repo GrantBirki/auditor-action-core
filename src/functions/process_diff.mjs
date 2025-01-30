@@ -148,7 +148,9 @@ export async function processDiff(config, diff) {
         })
 
         if (result.rule.requestedReviewers?.length > 0) {
-          core.debug(`noting the following reviewers are requested for this rule: ${result.rule.requestedReviewers}`)
+          core.debug(
+            `noting the following reviewers are requested for this rule: ${result.rule.requestedReviewers}`
+          )
           requestedReviewers.push(...result.rule.requestedReviewers)
         }
       }
@@ -160,6 +162,6 @@ export async function processDiff(config, diff) {
     message: message,
     counter: counter,
     annotations: annotations,
-    requestedReviewers: requestedReviewers,
+    requestedReviewers: requestedReviewers
   }
 }
