@@ -35012,6 +35012,7 @@ async function processDiff(config, diff) {
   var report = false
   var counter = 0
   var annotations = []
+  var requestedReviewers = []
 
   var annotation_level
   var icon
@@ -35147,6 +35148,13 @@ async function processDiff(config, diff) {
           // start_column: 1,
           // end_column: 1
         })
+
+        if (result.rule.requestedReviewers?.length > 0) {
+          core.debug(
+            `noting the following reviewers are requested for this rule: ${result.rule.requestedReviewers}`
+          )
+          requestedReviewers.push(...result.rule.requestedReviewers)
+        }
       }
     }
   }
@@ -35155,7 +35163,8 @@ async function processDiff(config, diff) {
     report: report,
     message: message,
     counter: counter,
-    annotations: annotations
+    annotations: annotations,
+    requestedReviewers: requestedReviewers
   }
 }
 
@@ -35305,23 +35314,77 @@ async function annotate(config, annotations) {
   core.debug(`checkRunId: ${checkRunId}`)
   core.debug(`====== end annotate ======`)
 
-  const response = await octokit.rest.checks.update({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    check_run_id: checkRunId,
-    name: core.getInput('annotate_name', {required: true}),
-    // head_sha: head_sha,
-    status: core.getInput('annotate_status', {required: true}),
-    conclusion: annotation_level,
-    output: {
-      title: core.getInput('annotate_title', {required: true}),
-      summary: core.getInput('annotate_summary', {required: true}),
-      annotations: annotations
+  try {
+    const response = await octokit.rest.checks.update({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      check_run_id: checkRunId,
+      name: core.getInput('annotate_name', {required: true}),
+      // head_sha: head_sha,
+      status: core.getInput('annotate_status', {required: true}),
+      conclusion: annotation_level,
+      output: {
+        title: core.getInput('annotate_title', {required: true}),
+        summary: core.getInput('annotate_summary', {required: true}),
+        annotations: annotations
+      }
+    })
+    core.debug(`annotations response: ${JSON.stringify(response, null, 2)}`)
+    core.debug(`annotations created`)
+  } catch (error) {
+    // if the error message contains "Resource not accessible by integration", log a custom message
+    if (error.message.includes('Resource not accessible by integration')) {
+      core.error(
+        'Please ensure you have "checks: write" permissions in your workflow. Or, perhaps the workflow is running in the context of a fork, in that case you will see this error as it is expected.'
+      )
     }
-  })
 
-  core.debug(`annotations response: ${JSON.stringify(response, null, 2)}`)
-  core.debug(`annotations created`)
+    core.error(`error creating annotations: ${error} trace: ${error.stack}`)
+    core.error(`annotations: ${JSON.stringify(annotations, null, 2)}`)
+  }
+}
+
+;// CONCATENATED MODULE: ./src/functions/request_reviewers.mjs
+
+
+
+
+async function requestReviewers(reviewers) {
+  if (process.env.CI !== 'true') {
+    core.warning('Not running in CI, skipping request reviewers')
+    return
+  }
+
+  const owner = github.context.repo.owner
+  const repo = github.context.repo.repo
+  const issueNumber = github.context.issue.number
+
+  const individual_reviewers = []
+  const team_reviewers = []
+  for (const reviewer of reviewers) {
+    if (reviewer.match(/^@?[A-Za-z0-9_]\/[A-Za-z0-9_]/)) {
+      team_reviewers.push(reviewer)
+    } else {
+      individual_reviewers.push(reviewer)
+    }
+  }
+
+  // exit early if there are no reviewers
+  if (individual_reviewers.length === 0 && team_reviewers.length === 0) {
+    core.debug('no reviewers found, skipping request reviewers')
+    return
+  }
+
+  const token = core.getInput('github_token', {required: true})
+  const octokit = github.getOctokit(token)
+
+  await octokit.rest.pulls.requestReviewers({
+    owner: owner,
+    repo: repo,
+    pull_number: issueNumber,
+    reviewers: individual_reviewers,
+    team_reviewers: team_reviewers
+  })
 }
 
 ;// CONCATENATED MODULE: ./src/functions/process_results.mjs
@@ -35332,9 +35395,12 @@ async function annotate(config, annotations) {
 
 
 
+
 async function processResults(config, results) {
   const alertLevel = config?.global_options?.alert_level || 'fail'
   const shouldComment = config?.global_options?.comment_on_pr ?? true
+  const shouldRequestReviewers =
+    config?.global_options?.request_reviewers ?? true
   const shouldAnnotate = core.getBooleanInput('annotate_pr')
   const writeResultsPath = core.getInput('write_results_path')
 
@@ -35355,6 +35421,11 @@ async function processResults(config, results) {
     if (shouldAnnotate === true) {
       core.info('annotating the pull request with the findings')
       await annotate(config, results.annotations)
+    }
+
+    if (shouldRequestReviewers === true) {
+      core.info('requesting the relevant reviewers on the pull request')
+      await requestReviewers(config, results.requestedReviewers)
     }
 
     if (alertLevel === 'fail') {

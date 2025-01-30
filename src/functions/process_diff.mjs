@@ -10,6 +10,7 @@ export async function processDiff(config, diff) {
   var report = false
   var counter = 0
   var annotations = []
+  var requestedReviewers = []
 
   var annotation_level
   var icon
@@ -145,6 +146,13 @@ export async function processDiff(config, diff) {
           // start_column: 1,
           // end_column: 1
         })
+
+        if (result.rule.requestedReviewers?.length > 0) {
+          core.debug(
+            `noting the following reviewers are requested for this rule: ${result.rule.requestedReviewers}`
+          )
+          requestedReviewers.push(...result.rule.requestedReviewers)
+        }
       }
     }
   }
@@ -153,6 +161,7 @@ export async function processDiff(config, diff) {
     report: report,
     message: message,
     counter: counter,
-    annotations: annotations
+    annotations: annotations,
+    requestedReviewers: requestedReviewers
   }
 }

@@ -42,21 +42,32 @@ export async function annotate(config, annotations) {
   core.debug(`checkRunId: ${checkRunId}`)
   core.debug(`====== end annotate ======`)
 
-  const response = await octokit.rest.checks.update({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    check_run_id: checkRunId,
-    name: core.getInput('annotate_name', {required: true}),
-    // head_sha: head_sha,
-    status: core.getInput('annotate_status', {required: true}),
-    conclusion: annotation_level,
-    output: {
-      title: core.getInput('annotate_title', {required: true}),
-      summary: core.getInput('annotate_summary', {required: true}),
-      annotations: annotations
+  try {
+    const response = await octokit.rest.checks.update({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      check_run_id: checkRunId,
+      name: core.getInput('annotate_name', {required: true}),
+      // head_sha: head_sha,
+      status: core.getInput('annotate_status', {required: true}),
+      conclusion: annotation_level,
+      output: {
+        title: core.getInput('annotate_title', {required: true}),
+        summary: core.getInput('annotate_summary', {required: true}),
+        annotations: annotations
+      }
+    })
+    core.debug(`annotations response: ${JSON.stringify(response, null, 2)}`)
+    core.debug(`annotations created`)
+  } catch (error) {
+    // if the error message contains "Resource not accessible by integration", log a custom message
+    if (error.message.includes('Resource not accessible by integration')) {
+      core.error(
+        'Please ensure you have "checks: write" permissions in your workflow. Or, perhaps the workflow is running in the context of a fork, in that case you will see this error as it is expected.'
+      )
     }
-  })
 
-  core.debug(`annotations response: ${JSON.stringify(response, null, 2)}`)
-  core.debug(`annotations created`)
+    core.error(`error creating annotations: ${error} trace: ${error.stack}`)
+    core.error(`annotations: ${JSON.stringify(annotations, null, 2)}`)
+  }
 }
