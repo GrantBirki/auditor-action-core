@@ -15,7 +15,7 @@ export async function requestReviewers(_config, reviewers) {
   const individual_reviewers = []
   const team_reviewers = []
   for (const reviewer of reviewers) {
-    if (reviewer.match(/^@?[A-Za-z0-9_]\/[A-Za-z0-9_]/)) {
+    if (reviewer.includes('/')) {
       team_reviewers.push(reviewer)
     } else {
       individual_reviewers.push(reviewer)
