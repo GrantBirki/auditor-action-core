@@ -3,6 +3,7 @@ import * as core from '@actions/core'
 import {comment} from './comment.mjs'
 import {label} from './label.mjs'
 import {annotate} from './annotate.mjs'
+import {requestReviewers} from './request_reviewers.mjs'
 import fs from 'fs'
 
 export async function processResults(config, results) {
