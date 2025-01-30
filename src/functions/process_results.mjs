@@ -8,6 +8,7 @@ import fs from 'fs'
 export async function processResults(config, results) {
   const alertLevel = config?.global_options?.alert_level || 'fail'
   const shouldComment = config?.global_options?.comment_on_pr ?? true
+  const shouldRequestReviewers = config?.global_options?.request_reviewers ?? true
   const shouldAnnotate = core.getBooleanInput('annotate_pr')
   const writeResultsPath = core.getInput('write_results_path')
 
@@ -28,6 +29,11 @@ export async function processResults(config, results) {
     if (shouldAnnotate === true) {
       core.info('annotating the pull request with the findings')
       await annotate(config, results.annotations)
+    }
+
+    if (shouldRequestReviewers === true) {
+      core.info('requesting the relevant reviewers on the pull request')
+      await requestReviewers(config, results.requestedReviewers)
     }
 
     if (alertLevel === 'fail') {
