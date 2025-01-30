@@ -35344,9 +35344,13 @@ async function requestReviewers(reviewers) {
     return
   }
 
-  var individual_reviewers = []
-  var team_reviewers = []
-  for (reviewer in reviewers) {
+  const owner = github.context.repo.owner
+  const repo = github.context.repo.repo
+  const issueNumber = github.context.issue.number
+
+  const individual_reviewers = []
+  const team_reviewers = []
+  for (const reviewer of reviewers) {
     if (reviewer.match(/^@?[A-Za-z0-9_]\/[A-Za-z0-9_]/)) {
       team_reviewers.push(reviewer)
     } else {
@@ -35356,10 +35360,11 @@ async function requestReviewers(reviewers) {
 
   const token = core.getInput('github_token', {required: true})
   const octokit = github.getOctokit(token)
-  // add a comment to the issue with the message
-  const response = await octokit.rest.pulls.requestReviewers({
-    ...github.context.repo,
-    pull_number: pull_number,
+
+  await octokit.rest.pulls.requestReviewers({
+    owner: owner,
+    repo: repo,
+    pull_number: issueNumber,
     reviewers: individual_reviewers,
     team_reviewers: team_reviewers
   })
