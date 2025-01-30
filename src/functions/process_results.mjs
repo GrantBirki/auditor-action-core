@@ -35,6 +35,8 @@ export async function processResults(config, results) {
 
     if (shouldRequestReviewers === true) {
       core.info('requesting the relevant reviewers on the pull request')
+      core.debug(`results.request_reviewers: ${results.requested_reviewers}`)
+      core.setOutput('requested_reviewers', results.requested_reviewers)
       await requestReviewers(config, results.requested_reviewers)
     }
 

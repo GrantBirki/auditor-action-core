@@ -36,6 +36,7 @@ This package is the core of the auditor-action. It works by doing the following:
 | --- | --- |
 | `passed` | Whether or not the audit passed - 'true' or 'false' |
 | `violation_count` | The number of violations found |
+| `requested_reviewers` | The list of requested reviewers (if any) |
 
 ## Configuration 📝
 

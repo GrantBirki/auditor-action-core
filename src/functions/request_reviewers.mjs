@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import {context} from '@actions/github'
 import * as github from '@actions/github'
 
-export async function requestReviewers(reviewers) {
+export async function requestReviewers(_config, reviewers) {
   if (process.env.CI !== 'true') {
     core.warning('Not running in CI, skipping request reviewers')
     return

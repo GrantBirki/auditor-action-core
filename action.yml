@@ -50,6 +50,8 @@ outputs:
     description: Whether or not the audit passed - 'true' or 'false'
   violation_count:
     description: The number of violations found
+  requested_reviewers:
+    description: The list of requested reviewers (if any)
 runs:
   using: "node20"
   main: "dist/index.js"
