@@ -16,7 +16,8 @@ export async function requestReviewers(_config, reviewers) {
   const team_reviewers = []
   for (const reviewer of reviewers) {
     if (reviewer.includes('/')) {
-      team_reviewers.push(reviewer)
+      const teamName = reviewer.split('/')[1]
+      team_reviewers.push(teamName)
     } else {
       individual_reviewers.push(reviewer)
     }
