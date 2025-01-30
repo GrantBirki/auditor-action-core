@@ -42,21 +42,25 @@ export async function annotate(config, annotations) {
   core.debug(`checkRunId: ${checkRunId}`)
   core.debug(`====== end annotate ======`)
 
-  const response = await octokit.rest.checks.update({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    check_run_id: checkRunId,
-    name: core.getInput('annotate_name', {required: true}),
-    // head_sha: head_sha,
-    status: core.getInput('annotate_status', {required: true}),
-    conclusion: annotation_level,
-    output: {
-      title: core.getInput('annotate_title', {required: true}),
-      summary: core.getInput('annotate_summary', {required: true}),
-      annotations: annotations
-    }
-  })
-
-  core.debug(`annotations response: ${JSON.stringify(response, null, 2)}`)
-  core.debug(`annotations created`)
+  try {
+    const response = await octokit.rest.checks.update({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      check_run_id: checkRunId,
+      name: core.getInput('annotate_name', {required: true}),
+      // head_sha: head_sha,
+      status: core.getInput('annotate_status', {required: true}),
+      conclusion: annotation_level,
+      output: {
+        title: core.getInput('annotate_title', {required: true}),
+        summary: core.getInput('annotate_summary', {required: true}),
+        annotations: annotations
+      }
+    })
+    core.debug(`annotations response: ${JSON.stringify(response, null, 2)}`)
+    core.debug(`annotations created`)
+  } catch (error) {
+    core.error(`error creating annotations: ${error} trace: ${error.stack}`)
+    core.error(`annotations: ${JSON.stringify(annotations, null, 2)}`)
+  }
 }
