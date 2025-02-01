@@ -53,11 +53,6 @@ export async function processDiff(config, diff) {
   }
 
   for (const file of diff.files) {
-    if (file.type === 'DeletedFile') {
-      // Skip deleted files
-      continue
-    }
-
     // dynamically get the file path as renamed files use a different property
     var path
     if (file?.path) {
@@ -73,6 +68,50 @@ export async function processDiff(config, diff) {
 
     if ((await globallyExcluded(path, config)) === true) {
       core.debug(`skipping globally excluded file: ${path}`)
+      continue
+    }
+
+    if ((await included({type: 'file-change', include_regex: config.rules.find(rule => rule.type === 'file-change')?.include_regex}, path)) === false) {
+      core.debug(`skipping file not included by file-change rule: ${path}`)
+      continue
+    }
+
+    if (file.type === 'DeletedFile' || file.type === 'AddedFile') {
+      var result = audit(config, '', path)
+
+      if (result.passed) {
+        continue
+      }
+
+      if ((await excluded(result.rule, path)) === true) {
+        core.debug(
+          `violation found for path '${path}', but excluded via rule: '${result?.rule?.name}'`
+        )
+        continue
+      }
+
+      core.debug(
+        `violation found for path '${path}' via rule: '${result?.rule?.name}'`
+      )
+      report = true
+      counter += 1
+      message += `- Alert ${counter}\n  - **Rule**: ${result.rule.name}\n  - **Message**: ${result.rule.message}\n  - File: \`${path}\`\n  - Rule Type: \`${result.rule.type}\`\n\n`
+
+      annotations.push({
+        path: path,
+        start_line: 1,
+        end_line: 1,
+        annotation_level: annotation_level,
+        message: result.rule.message
+      })
+
+      if (result.rule?.requested_reviewers?.length > 0) {
+        core.debug(
+          `noting the following reviewers are requested for this rule: ${result.rule.requested_reviewers}`
+        )
+        requested_reviewers.push(...result.rule.requested_reviewers)
+      }
+
       continue
     }
 
@@ -106,7 +145,7 @@ export async function processDiff(config, diff) {
         }
 
         // audit the line content with the ruleset
-        var result = audit(config, change.content)
+        var result = audit(config, change.content, path)
 
         if (result.passed) {
           // go to the next line in the git diff if the line passes the rule set
