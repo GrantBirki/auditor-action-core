@@ -100,7 +100,15 @@ export async function processDiff(config, diff) {
       core.debug(
         `violation found for path '${path}' via rule: '${result?.rule?.name}'`
       )
-      report = true
+
+      if (result.rule?.do_not_fail === true) {
+        core.debug(
+          `the ${result.rule.name} was triggered, but will not fail the report alone`
+        )
+      } else {
+        report = true
+      }
+
       counter += 1
       message += `- Alert ${counter}\n  - **Rule**: ${result.rule.name}\n  - **Message**: ${result.rule.message}\n  - File: \`${path}\`\n  - Rule Type: \`${result.rule.type}\`\n\n`
 
@@ -179,7 +187,15 @@ export async function processDiff(config, diff) {
         core.debug(
           `violation found for path '${path}' via rule: '${result?.rule?.name}'`
         )
-        report = true
+
+        if (result.rule?.do_not_fail === true) {
+          core.debug(
+            `the ${result.rule.name} was triggered, but will not fail the report alone`
+          )
+        } else {
+          report = true
+        }
+
         counter += 1
         message += `- Alert ${counter}\n  - **Rule**: ${result.rule.name}\n  - **Message**: ${result.rule.message}\n  - File: \`${path}\`\n  - Line: [\`${change.lineAfter}\`](${base_url}/${path}#L${change.lineAfter})\n  - Rule Type: \`${result.rule.type}\`\n  - Rule Pattern: \`${result.rule.pattern}\`\n\n`
 

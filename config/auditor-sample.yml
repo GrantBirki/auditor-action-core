@@ -32,6 +32,10 @@ rules:
     message: file-changed, this needs a review by the auth team
     include_regex:
       - "^.*\\.critical_file$"
+    requested_reviewers:
+      - "octocat"
+      - "org/team"
+    do_not_fail: true # do not fail the audit if this rule is violated, it will still leave annotations, comments, and request reviewers
 
 # global configuration options
 global_options:
