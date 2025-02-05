@@ -8,19 +8,16 @@ rules:
       - "^.*\\.txt$"
     exclude_regex: # a regex to match the file path against - if it matches, the rule will not be applied
       - "^.*\\.log$"
-    do_not_fail: true
 
   - name: "Root User Detected - Case Insensitive"
     type: string-case-insensitive # a case insensitive string match
     pattern: "UseR rOoT"
     message: root user detected - nice try...
-    do_not_fail: true
 
   - name: "Root User Detected - Regex"
     type: regex # a regular expression match (regex)
-    pattern: "user\\s+root" # the regex pattern to use for matching (global matchl for the line contents)
+    pattern: "user\\s+root" # the regex pattern to use for matching (global match for the line contents)
     message: root user detected - gotcha with regex
-    do_not_fail: true
 
   - name: should not find anything
     type: regex
@@ -42,12 +39,12 @@ rules:
 
 # global configuration options
 global_options:
-  alert_level: fail # whether to fail or warn the Actions workflow if a violation is found - default is fail
+  alert_level: warn # whether to fail or warn the Actions workflow if a violation is found - default is fail
   comment_on_pr: false # whether to comment on the PR with the violations found - default is true
   # exclude_auditor_config: false # exclude the auditor config file from the audit (this file) - default is true
   # labels: # the labels to apply to the PR if a violation is found - comment out to disable
   #   - alert
   #   - auditor
-  request_reviewers: true # whether to request reviewers on the PR if a violation is found - default is true
+  request_reviewers: false # whether to request reviewers on the PR if a violation is found - default is true
   exclude_regex: # list of regex patterns to exclude files from the audit globally
    - "\\.md$"
