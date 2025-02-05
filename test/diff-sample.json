@@ -921,6 +921,17 @@
             "path": "vendor/cache/terratrash-1.0.0.gem"
         },
         {
+            "type": "DeletedFile",
+            "chunks": [
+                {
+                    "type": "BinaryFilesChunk",
+                    "pathBefore": "test/test.critical_file",
+                    "pathAfter": "/dev/null"
+                }
+            ],
+            "path": "test/test.critical_file"
+        },
+        {
             "type": "AddedFile",
             "chunks": [
                 {

@@ -31,7 +31,7 @@ rules:
     type: file-change
     message: file-changed, this needs a review by the auth team
     include_regex:
-      - "^.*\\.txt$"
+      - "^.*\\.critical_file$"
 
 # global configuration options
 global_options:
