@@ -35619,7 +35619,7 @@ var github = __nccwpck_require__(3228);
 // :param content: a single line content from the git diff
 // Returns {rule: <rule>, passed: false} if the line fails the rule set
 // Returns {passed: true} if the line passes all rule sets
-function audit(config, content) {
+function audit(config, content, path) {
   for (const rule of config.rules) {
     if (rule.type === 'regex') {
       const regex = new RegExp(rule.pattern, 'g')
@@ -35643,6 +35643,18 @@ function audit(config, content) {
         return {
           rule: rule,
           passed: false
+        }
+      }
+    } else if (rule.type === 'file-change') {
+      for (const includeRule of rule.include_regex || []) {
+        const regex = new RegExp(includeRule, 'g')
+        const matches = path.match(regex)
+
+        if (matches) {
+          return {
+            rule: rule,
+            passed: false
+          }
         }
       }
     } else {
@@ -35812,10 +35824,7 @@ async function processDiff(config, diff) {
   }
 
   for (const file of diff.files) {
-    if (file.type === 'DeletedFile') {
-      // Skip deleted files
-      continue
-    }
+    var result
 
     // dynamically get the file path as renamed files use a different property
     var path
@@ -35832,6 +35841,55 @@ async function processDiff(config, diff) {
 
     if ((await globallyExcluded(path, config)) === true) {
       core.debug(`skipping globally excluded file: ${path}`)
+      continue
+    }
+
+    // if the rule is a file-change rule, audit the entire file to see if it has been changed in anyway
+    if (
+      (await included(
+        {
+          type: 'file-change',
+          include_regex: config.rules.find(rule => rule.type === 'file-change')
+            ?.include_regex
+        },
+        path
+      )) === true
+    ) {
+      result = audit(config, '', path)
+
+      if (result.passed) {
+        continue
+      }
+
+      if ((await excluded(result.rule, path)) === true) {
+        core.debug(
+          `violation found for path '${path}', but excluded via rule: '${result?.rule?.name}'`
+        )
+        continue
+      }
+
+      core.debug(
+        `violation found for path '${path}' via rule: '${result?.rule?.name}'`
+      )
+      report = true
+      counter += 1
+      message += `- Alert ${counter}\n  - **Rule**: ${result.rule.name}\n  - **Message**: ${result.rule.message}\n  - File: \`${path}\`\n  - Rule Type: \`${result.rule.type}\`\n\n`
+
+      annotations.push({
+        path: path,
+        start_line: 1,
+        end_line: 1,
+        annotation_level: annotation_level,
+        message: result.rule.message
+      })
+
+      if (result.rule?.requested_reviewers?.length > 0) {
+        core.debug(
+          `noting the following reviewers are requested for this rule: ${result.rule.requested_reviewers}`
+        )
+        requested_reviewers.push(...result.rule.requested_reviewers)
+      }
+
       continue
     }
 
@@ -35865,7 +35923,7 @@ async function processDiff(config, diff) {
         }
 
         // audit the line content with the ruleset
-        var result = audit(config, change.content)
+        result = audit(config, change.content, path)
 
         if (result.passed) {
           // go to the next line in the git diff if the line passes the rule set

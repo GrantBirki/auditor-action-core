@@ -34,3 +34,9 @@ The **Auditor** has detected findings in your pull request
   - Rule Type: `regex`
   - Rule Pattern: `user\s+root`
 
+- Alert 5
+  - **Rule**: Sensitive files changed
+  - **Message**: file-changed, this needs a review by the auth team
+  - File: `test/test.critical_file`
+  - Rule Type: `file-change`
+

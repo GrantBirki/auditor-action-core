@@ -27,6 +27,12 @@ rules:
       - "octocat"
       - "org/team"
 
+  - name: "Sensitive files changed"
+    type: file-change
+    message: file-changed, this needs a review by the auth team
+    include_regex:
+      - "^.*\\.critical_file$"
+
 # global configuration options
 global_options:
   alert_level: warn # whether to fail or warn the Actions workflow if a violation is found - default is fail
