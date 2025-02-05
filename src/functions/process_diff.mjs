@@ -71,7 +71,16 @@ export async function processDiff(config, diff) {
       continue
     }
 
-    if ((await included({type: 'file-change', include_regex: config.rules.find(rule => rule.type === 'file-change')?.include_regex}, path)) === false) {
+    if (
+      (await included(
+        {
+          type: 'file-change',
+          include_regex: config.rules.find(rule => rule.type === 'file-change')
+            ?.include_regex
+        },
+        path
+      )) === false
+    ) {
       core.debug(`skipping file not included by file-change rule: ${path}`)
       continue
     }
