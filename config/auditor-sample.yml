@@ -16,7 +16,7 @@ rules:
 
   - name: "Root User Detected - Regex"
     type: regex # a regular expression match (regex)
-    pattern: "user\\s+root" # the regex pattern to use for matching (global matchl for the line contents)
+    pattern: "user\\s+root" # the regex pattern to use for matching (global match for the line contents)
     message: root user detected - gotcha with regex
 
   - name: should not find anything
@@ -32,6 +32,10 @@ rules:
     message: file-changed, this needs a review by the auth team
     include_regex:
       - "^.*\\.critical_file$"
+    requested_reviewers:
+      - "octocat"
+      - "org/team"
+    do_not_fail: true # do not fail the audit if this rule is violated, it will still leave annotations, comments, and request reviewers
 
 # global configuration options
 global_options:

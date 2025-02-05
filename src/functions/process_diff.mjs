@@ -7,7 +7,8 @@ import {excluded} from './excluded.mjs'
 import {included} from './included.mjs'
 
 export async function processDiff(config, diff) {
-  var report = false
+  var report = false // indicates if a report should be generated
+  var fail = false // indicates if one or more rules failed and one or more of those rules have the do_not_fail attribute set to true (or unset)
   var counter = 0
   var annotations = []
   var requested_reviewers = []
@@ -100,6 +101,15 @@ export async function processDiff(config, diff) {
       core.debug(
         `violation found for path '${path}' via rule: '${result?.rule?.name}'`
       )
+
+      if (result.rule?.do_not_fail === true) {
+        core.debug(
+          `the ${result.rule.name} was triggered, but will not fail the report alone`
+        )
+      } else {
+        fail = true
+      }
+
       report = true
       counter += 1
       message += `- Alert ${counter}\n  - **Rule**: ${result.rule.name}\n  - **Message**: ${result.rule.message}\n  - File: \`${path}\`\n  - Rule Type: \`${result.rule.type}\`\n\n`
@@ -179,6 +189,15 @@ export async function processDiff(config, diff) {
         core.debug(
           `violation found for path '${path}' via rule: '${result?.rule?.name}'`
         )
+
+        if (result.rule?.do_not_fail === true) {
+          core.debug(
+            `the ${result.rule.name} was triggered, but will not fail the report alone`
+          )
+        } else {
+          fail = true
+        }
+
         report = true
         counter += 1
         message += `- Alert ${counter}\n  - **Rule**: ${result.rule.name}\n  - **Message**: ${result.rule.message}\n  - File: \`${path}\`\n  - Line: [\`${change.lineAfter}\`](${base_url}/${path}#L${change.lineAfter})\n  - Rule Type: \`${result.rule.type}\`\n  - Rule Pattern: \`${result.rule.pattern}\`\n\n`
@@ -205,6 +224,7 @@ export async function processDiff(config, diff) {
   }
 
   return {
+    fail: fail,
     report: report,
     message: message,
     counter: counter,
