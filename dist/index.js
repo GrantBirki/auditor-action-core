@@ -36267,7 +36267,7 @@ async function processResults(config, results) {
       await requestReviewers(config, results.requested_reviewers)
     }
 
-    if (alertLevel === 'fail' && results.failed) {
+    if (alertLevel === 'fail' && results.fail) {
       core.error(results.message)
       core.setFailed(`The Auditor found ${results.counter} findings`)
     }
