@@ -48,6 +48,6 @@ global_options:
   # labels: # the labels to apply to the PR if a violation is found - comment out to disable
   #   - alert
   #   - auditor
-  request_reviewers: false # whether to request reviewers on the PR if a violation is found - default is true
+  request_reviewers: true # whether to request reviewers on the PR if a violation is found - default is true
   exclude_regex: # list of regex patterns to exclude files from the audit globally
    - "\\.md$"
