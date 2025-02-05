@@ -1,31 +1,31 @@
 # rules is an array of auditor 'rules' that will be used to detect violations
 rules:
-  # - name: "Root User Detected" # the name of the rule
-  #   type: string-exact # an exact string match - case sensitive
-  #   pattern: "user root" # the string to match
-  #   message: root user detected - this is not allowed, please try again # the message to display if a match is found
-  #   include_regex: # a regex to match the file path against - if it matches, the rule will be applied
-  #     - "^.*\\.txt$"
-  #   exclude_regex: # a regex to match the file path against - if it matches, the rule will not be applied
-  #     - "^.*\\.log$"
+  - name: "Root User Detected" # the name of the rule
+    type: string-exact # an exact string match - case sensitive
+    pattern: "user root" # the string to match
+    message: root user detected - this is not allowed, please try again # the message to display if a match is found
+    include_regex: # a regex to match the file path against - if it matches, the rule will be applied
+      - "^.*\\.txt$"
+    exclude_regex: # a regex to match the file path against - if it matches, the rule will not be applied
+      - "^.*\\.log$"
 
-  # - name: "Root User Detected - Case Insensitive"
-  #   type: string-case-insensitive # a case insensitive string match
-  #   pattern: "UseR rOoT"
-  #   message: root user detected - nice try...
+  - name: "Root User Detected - Case Insensitive"
+    type: string-case-insensitive # a case insensitive string match
+    pattern: "UseR rOoT"
+    message: root user detected - nice try...
 
-  # - name: "Root User Detected - Regex"
-  #   type: regex # a regular expression match (regex)
-  #   pattern: "user\\s+root" # the regex pattern to use for matching (global match for the line contents)
-  #   message: root user detected - gotcha with regex
+  - name: "Root User Detected - Regex"
+    type: regex # a regular expression match (regex)
+    pattern: "user\\s+root" # the regex pattern to use for matching (global match for the line contents)
+    message: root user detected - gotcha with regex
 
-  # - name: should not find anything
-  #   type: regex
-  #   pattern: "p{100}"
-  #   message: this should not match anything - if it did I broke
-  #   requested_reviewers:
-  #     - "octocat"
-  #     - "org/team"
+  - name: should not find anything
+    type: regex
+    pattern: "p{100}"
+    message: this should not match anything - if it did I broke
+    requested_reviewers:
+      - "octocat"
+      - "org/team"
 
   - name: "Sensitive files changed"
     type: file-change
@@ -35,11 +35,11 @@ rules:
     requested_reviewers:
       - "octocat"
       - "org/team"
-    do_not_fail: false # do not fail the audit if this rule is violated, it will still leave annotations, comments, and request reviewers
+    do_not_fail: true # do not fail the audit if this rule is violated, it will still leave annotations, comments, and request reviewers
 
 # global configuration options
 global_options:
-  alert_level: fail # whether to fail or warn the Actions workflow if a violation is found - default is fail
+  alert_level: warn # whether to fail or warn the Actions workflow if a violation is found - default is fail
   comment_on_pr: false # whether to comment on the PR with the violations found - default is true
   # exclude_auditor_config: false # exclude the auditor config file from the audit (this file) - default is true
   # labels: # the labels to apply to the PR if a violation is found - comment out to disable
