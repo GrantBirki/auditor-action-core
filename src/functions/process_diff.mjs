@@ -53,6 +53,8 @@ export async function processDiff(config, diff) {
   }
 
   for (const file of diff.files) {
+    var result
+
     // dynamically get the file path as renamed files use a different property
     var path
     if (file?.path) {
@@ -71,6 +73,7 @@ export async function processDiff(config, diff) {
       continue
     }
 
+    // if the rule is a file-change rule, audit the entire file to see if it has been changed in anyway
     if (
       (await included(
         {
@@ -79,14 +82,9 @@ export async function processDiff(config, diff) {
             ?.include_regex
         },
         path
-      )) === false
+      )) === true
     ) {
-      core.debug(`skipping file not included by file-change rule: ${path}`)
-      continue
-    }
-
-    if (file.type === 'DeletedFile' || file.type === 'AddedFile') {
-      var result = audit(config, '', path)
+      result = audit(config, '', path)
 
       if (result.passed) {
         continue
@@ -154,7 +152,7 @@ export async function processDiff(config, diff) {
         }
 
         // audit the line content with the ruleset
-        var result = audit(config, change.content, path)
+        result = audit(config, change.content, path)
 
         if (result.passed) {
           // go to the next line in the git diff if the line passes the rule set
