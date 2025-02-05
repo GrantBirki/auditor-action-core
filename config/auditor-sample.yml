@@ -39,7 +39,7 @@ rules:
 
 # global configuration options
 global_options:
-  alert_level: warn # whether to fail or warn the Actions workflow if a violation is found - default is fail
+  alert_level: fail # whether to fail or warn the Actions workflow if a violation is found - default is fail
   comment_on_pr: false # whether to comment on the PR with the violations found - default is true
   # exclude_auditor_config: false # exclude the auditor config file from the audit (this file) - default is true
   # labels: # the labels to apply to the PR if a violation is found - comment out to disable
