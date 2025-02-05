@@ -20,6 +20,7 @@ rules:
     type: regex # a regular expression match (regex)
     pattern: "user\\s+root" # the regex pattern to use for matching (global match for the line contents)
     message: root user detected - gotcha with regex
+    do_not_fail: true
 
   - name: should not find anything
     type: regex
