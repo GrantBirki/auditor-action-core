@@ -7,8 +7,7 @@ import {excluded} from './excluded.mjs'
 import {included} from './included.mjs'
 
 export async function processDiff(config, diff) {
-  var report = false // indicates if a report should be generated
-  var fail = false // indicates if one or more rules failed and one or more of those rules have the do_not_fail attribute set to true (or unset)
+  var report = false
   var counter = 0
   var annotations = []
   var requested_reviewers = []
@@ -54,7 +53,10 @@ export async function processDiff(config, diff) {
   }
 
   for (const file of diff.files) {
-    var result
+    if (file.type === 'DeletedFile') {
+      // Skip deleted files
+      continue
+    }
 
     // dynamically get the file path as renamed files use a different property
     var path
@@ -71,64 +73,6 @@ export async function processDiff(config, diff) {
 
     if ((await globallyExcluded(path, config)) === true) {
       core.debug(`skipping globally excluded file: ${path}`)
-      continue
-    }
-
-    // if the rule is a file-change rule, audit the entire file to see if it has been changed in anyway
-    if (
-      (await included(
-        {
-          type: 'file-change',
-          include_regex: config.rules.find(rule => rule.type === 'file-change')
-            ?.include_regex
-        },
-        path
-      )) === true
-    ) {
-      result = audit(config, '', path)
-
-      if (result.passed) {
-        continue
-      }
-
-      if ((await excluded(result.rule, path)) === true) {
-        core.debug(
-          `violation found for path '${path}', but excluded via rule: '${result?.rule?.name}'`
-        )
-        continue
-      }
-
-      core.debug(
-        `violation found for path '${path}' via rule: '${result?.rule?.name}'`
-      )
-
-      if (result.rule?.do_not_fail === true) {
-        core.debug(
-          `the ${result.rule.name} was triggered, but will not fail the report alone`
-        )
-      } else {
-        fail = true
-      }
-
-      report = true
-      counter += 1
-      message += `- Alert ${counter}\n  - **Rule**: ${result.rule.name}\n  - **Message**: ${result.rule.message}\n  - File: \`${path}\`\n  - Rule Type: \`${result.rule.type}\`\n\n`
-
-      annotations.push({
-        path: path,
-        start_line: 1,
-        end_line: 1,
-        annotation_level: annotation_level,
-        message: result.rule.message
-      })
-
-      if (result.rule?.requested_reviewers?.length > 0) {
-        core.debug(
-          `noting the following reviewers are requested for this rule: ${result.rule.requested_reviewers}`
-        )
-        requested_reviewers.push(...result.rule.requested_reviewers)
-      }
-
       continue
     }
 
@@ -162,7 +106,7 @@ export async function processDiff(config, diff) {
         }
 
         // audit the line content with the ruleset
-        result = audit(config, change.content, path)
+        var result = audit(config, change.content)
 
         if (result.passed) {
           // go to the next line in the git diff if the line passes the rule set
@@ -189,15 +133,6 @@ export async function processDiff(config, diff) {
         core.debug(
           `violation found for path '${path}' via rule: '${result?.rule?.name}'`
         )
-
-        if (result.rule?.do_not_fail === true) {
-          core.debug(
-            `the ${result.rule.name} was triggered, but will not fail the report alone`
-          )
-        } else {
-          fail = true
-        }
-
         report = true
         counter += 1
         message += `- Alert ${counter}\n  - **Rule**: ${result.rule.name}\n  - **Message**: ${result.rule.message}\n  - File: \`${path}\`\n  - Line: [\`${change.lineAfter}\`](${base_url}/${path}#L${change.lineAfter})\n  - Rule Type: \`${result.rule.type}\`\n  - Rule Pattern: \`${result.rule.pattern}\`\n\n`
@@ -224,7 +159,6 @@ export async function processDiff(config, diff) {
   }
 
   return {
-    fail: fail,
     report: report,
     message: message,
     counter: counter,

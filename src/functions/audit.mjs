@@ -6,7 +6,7 @@ import * as core from '@actions/core'
 // :param content: a single line content from the git diff
 // Returns {rule: <rule>, passed: false} if the line fails the rule set
 // Returns {passed: true} if the line passes all rule sets
-export function audit(config, content, path) {
+export function audit(config, content) {
   for (const rule of config.rules) {
     if (rule.type === 'regex') {
       const regex = new RegExp(rule.pattern, 'g')
@@ -30,18 +30,6 @@ export function audit(config, content, path) {
         return {
           rule: rule,
           passed: false
-        }
-      }
-    } else if (rule.type === 'file-change') {
-      for (const includeRule of rule.include_regex || []) {
-        const regex = new RegExp(includeRule, 'g')
-        const matches = path.match(regex)
-
-        if (matches) {
-          return {
-            rule: rule,
-            passed: false
-          }
         }
       }
     } else {
