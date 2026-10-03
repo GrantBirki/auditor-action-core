@@ -1,8 +1,9 @@
-import * as core from '@actions/core'
+import type {Config} from '../types.js'
+import * as core from '../actions.js'
 import {context} from '@actions/github'
 import * as github from '@actions/github'
 
-export async function requestReviewers(_config, reviewers) {
+export async function requestReviewers(_config: Config, reviewers: string[]) {
   if (process.env.CI !== 'true') {
     core.warning('Not running in CI, skipping request reviewers')
     return
@@ -16,7 +17,7 @@ export async function requestReviewers(_config, reviewers) {
   const team_reviewers = []
   for (const reviewer of reviewers) {
     if (reviewer.includes('/')) {
-      const teamName = reviewer.split('/')[1]
+      const teamName = reviewer.split('/')[1]!
       team_reviewers.push(teamName)
     } else {
       individual_reviewers.push(reviewer)

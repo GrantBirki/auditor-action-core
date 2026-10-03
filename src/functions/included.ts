@@ -1,6 +1,7 @@
-import * as core from '@actions/core'
+import type {Rule} from '../types.js'
+import * as core from '../actions.js'
 
-export async function included(rule, path) {
+export async function included(rule: Rule, path: string) {
   // if the include rule is not defined, return true as we will include by default
   if (rule?.include_regex === null || rule?.include_regex === undefined) {
     return true

@@ -1,0 +1,5 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+expected="$(cat .node-version)"
+[[ "$(node --version)" == "v$expected" ]] || { echo "Use Node $expected (see .node-version)" >&2; exit 1; }

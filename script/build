@@ -1,0 +1,19 @@
+#!/bin/bash
+source "$(dirname "$0")/common"
+rm -rf .build
+node node_modules/typescript/bin/tsc
+rm -rf dist
+node node_modules/@vercel/ncc/dist/ncc/cli.js build .build/src/main.js -o dist --source-map --license licenses.txt
+# ncc emits a CommonJS source-map helper inside this ESM package.
+if [[ -f dist/sourcemap-register.js ]]; then
+  mv dist/sourcemap-register.js dist/sourcemap-register.cjs
+  node --input-type=module <<'JS'
+import {readFileSync, writeFileSync} from 'node:fs'
+const path = 'dist/index.js'
+writeFileSync(path, readFileSync(path, 'utf8').replace('./sourcemap-register.js', './sourcemap-register.cjs'))
+JS
+fi
+node --input-type=module <<'JS'
+import {appendFileSync, readFileSync} from 'node:fs'
+appendFileSync('dist/licenses.txt', '\n' + readFileSync('THIRD_PARTY_NOTICES.md', 'utf8'))
+JS

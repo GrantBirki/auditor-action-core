@@ -1,12 +1,13 @@
-import * as core from '@actions/core'
+import type {Config, Results} from '../types.js'
+import * as core from '../actions.js'
 
-import {comment} from './comment.mjs'
-import {label} from './label.mjs'
-import {annotate} from './annotate.mjs'
-import {requestReviewers} from './request_reviewers.mjs'
-import fs from 'fs'
+import {comment} from './comment.js'
+import {label} from './label.js'
+import {annotate} from './annotate.js'
+import {requestReviewers} from './request_reviewers.js'
+import fs from 'node:fs'
 
-export async function processResults(config, results) {
+export async function processResults(config: Config, results: Results) {
   const alertLevel = config?.global_options?.alert_level || 'fail'
   const shouldComment = config?.global_options?.comment_on_pr ?? true
   const shouldRequestReviewers =

@@ -1,8 +1,9 @@
-import * as core from '@actions/core'
+import type {Config} from '../types.js'
+import * as core from '../actions.js'
 import {context} from '@actions/github'
 import * as github from '@actions/github'
 
-export async function label(config, action) {
+export async function label(config: Config, action: 'add' | 'remove') {
   const labels = config.global_options?.labels || []
   const token = core.getInput('github_token', {required: true})
   const octokit = github.getOctokit(token)

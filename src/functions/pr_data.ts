@@ -1,4 +1,4 @@
-import * as core from '@actions/core'
+import * as core from '../actions.js'
 import {context} from '@actions/github'
 import * as github from '@actions/github'
 

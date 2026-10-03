@@ -1,0 +1,7 @@
+#!/bin/bash
+source "$(dirname "$0")/common"
+snapshot="$(mktemp -d)"
+trap 'rm -rf "$snapshot"' EXIT
+cp -R dist "$snapshot/dist"
+script/build
+diff -r "$snapshot/dist" dist

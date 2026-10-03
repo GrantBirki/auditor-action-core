@@ -1,6 +1,7 @@
-import * as core from '@actions/core'
+import type {Config} from '../types.js'
+import * as core from '../actions.js'
 
-export async function globallyExcluded(path, config) {
+export async function globallyExcluded(path: string, config: Config) {
   // if the exclude rule is not define, return false as we are not excluding anything
   if (config?.global_options === null || config?.global_options === undefined) {
     return false

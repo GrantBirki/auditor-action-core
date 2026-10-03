@@ -1,0 +1,3 @@
+#!/bin/bash
+source "$(dirname "$0")/common"
+node node_modules/prettier/bin/prettier.cjs --check 'src/**/*.ts' 'test/**/*.ts'

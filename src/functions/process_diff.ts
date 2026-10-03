@@ -1,19 +1,20 @@
+import type {Config, Diff, Annotation} from '../types.js'
 import * as github from '@actions/github'
-import * as core from '@actions/core'
-import {audit} from './audit.mjs'
-import {prData} from './pr_data.mjs'
-import {globallyExcluded} from './globally_excluded.mjs'
-import {excluded} from './excluded.mjs'
-import {included} from './included.mjs'
+import * as core from '../actions.js'
+import {audit} from './audit.js'
+import {prData} from './pr_data.js'
+import {globallyExcluded} from './globally_excluded.js'
+import {excluded} from './excluded.js'
+import {included} from './included.js'
 
-export async function processDiff(config, diff) {
-  var report = false
-  var counter = 0
-  var annotations = []
-  var requested_reviewers = []
+export async function processDiff(config: Config, diff: Diff) {
+  let report = false
+  let counter = 0
+  const annotations: Annotation[] = []
+  const requested_reviewers: string[] = []
 
-  var annotation_level
-  var icon
+  let annotation_level: Annotation['annotation_level']
+  let icon
   const alertLevel = config?.global_options?.alert_level || 'fail'
 
   core.debug(`alert_level: ${alertLevel}`)
@@ -26,15 +27,15 @@ export async function processDiff(config, diff) {
     icon = '⚠️'
   }
 
-  var message = `### Auditor Results ${icon}\n\nThe **Auditor** has detected findings in your pull request\n\n`
+  let message = `### Auditor Results ${icon}\n\nThe **Auditor** has detected findings in your pull request\n\n`
 
-  var base_url = core.getInput('github_base_url', {required: true})
+  let base_url = core.getInput('github_base_url', {required: true})
   if (process.env.CI === 'true') {
     const pr = await prData()
     base_url = `${base_url}/${github.context.repo.owner}/${github.context.repo.repo}/blob/${pr.head.ref}`
   }
 
-  var exclude_auditor_config = true
+  let exclude_auditor_config = true
   if (config.global_options?.exclude_auditor_config === false) {
     exclude_auditor_config = false
   }
@@ -59,12 +60,7 @@ export async function processDiff(config, diff) {
     }
 
     // dynamically get the file path as renamed files use a different property
-    var path
-    if (file?.path) {
-      path = file.path
-    } else if (file?.pathAfter) {
-      path = file.pathAfter
-    }
+    const path = (file.path || file.pathAfter)!
 
     if (path === configPath && exclude_auditor_config === true) {
       core.debug(`Skipping config file (self): ${path}`)
@@ -106,7 +102,7 @@ export async function processDiff(config, diff) {
         }
 
         // audit the line content with the ruleset
-        var result = audit(config, change.content)
+        let result = audit(config, change.content)
 
         if (result.passed) {
           // go to the next line in the git diff if the line passes the rule set
@@ -148,7 +144,7 @@ export async function processDiff(config, diff) {
         })
 
         // if the rule has an attribute requested_reviewers, add them to the list
-        if (result.rule?.requested_reviewers?.length > 0) {
+        if (result.rule.requested_reviewers?.length) {
           core.debug(
             `noting the following reviewers are requested for this rule: ${result.rule.requested_reviewers}`
           )

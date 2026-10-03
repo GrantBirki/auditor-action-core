@@ -1,0 +1,23 @@
+#!/bin/bash
+source "$(dirname "$0")/common"
+args=(ci --ignore-scripts --no-audit --no-fund --cache .npm)
+case "${1:-}" in
+  '') ;;
+  --offline) args+=(--offline) ;;
+  *) echo 'Usage: script/bootstrap [--offline]' >&2; exit 1 ;;
+esac
+if command -v sfw >/dev/null 2>&1; then
+  sfw npm "${args[@]}"
+else
+  npm "${args[@]}"
+fi
+# A successful wrapper exit alone does not prove installation happened.
+node --input-type=module <<'JS'
+import {readFileSync} from 'node:fs'
+const lock = JSON.parse(readFileSync('package-lock.json', 'utf8'))
+for (const [path, entry] of Object.entries(lock.packages)) {
+  if (!path) continue
+  const installed = JSON.parse(readFileSync(`${path}/package.json`, 'utf8'))
+  if (installed.version !== entry.version) throw new Error(`Version mismatch: ${path}`)
+}
+JS
