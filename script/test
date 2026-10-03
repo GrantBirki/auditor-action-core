@@ -1,4 +1,5 @@
 #!/bin/bash
 source "$(dirname "$0")/common"
+rm -rf .build
 node node_modules/typescript/bin/tsc
 node --test .build/test/*.test.js

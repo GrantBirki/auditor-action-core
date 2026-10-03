@@ -1,5 +1,6 @@
 #!/bin/bash
 source "$(dirname "$0")/common"
+rm -rf .build
 node node_modules/typescript/bin/tsc
 rm -rf dist
 node node_modules/@vercel/ncc/dist/ncc/cli.js build .build/src/main.js -o dist --source-map --license licenses.txt
