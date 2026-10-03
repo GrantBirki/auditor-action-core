@@ -1,4 +1,5 @@
-import * as core from '@actions/core'
+import type {Config} from '../types.js'
+import * as core from '../actions.js'
 
 // Auditor function which checks if a line of git diff passes the configured rule set
 // The Auditor will always return the first match for a line
@@ -6,7 +7,10 @@ import * as core from '@actions/core'
 // :param content: a single line content from the git diff
 // Returns {rule: <rule>, passed: false} if the line fails the rule set
 // Returns {passed: true} if the line passes all rule sets
-export function audit(config, content) {
+export function audit(
+  config: Config,
+  content: string
+): {passed: true} | {passed: false; rule: import('../types.js').Rule} {
   for (const rule of config.rules) {
     if (rule.type === 'regex') {
       const regex = new RegExp(rule.pattern, 'g')

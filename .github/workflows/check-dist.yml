@@ -26,10 +26,10 @@ jobs:
           cache: npm
 
       - name: install dependencies
-        run: npm ci
+        run: script/bootstrap
 
       - name: rebuild the dist/ directory
-        run: npm run package
+        run: script/all
 
       - name: compare the expected and actual dist/ directories
         run: |

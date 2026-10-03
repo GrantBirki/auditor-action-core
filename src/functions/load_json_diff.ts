@@ -1,5 +1,6 @@
-import * as core from '@actions/core'
-import {readFileSync} from 'fs'
+import type {Diff} from '../types.js'
+import * as core from '../actions.js'
+import {readFileSync} from 'node:fs'
 
 export function loadJsonDiff() {
   try {
@@ -13,7 +14,7 @@ export function loadJsonDiff() {
       process.exit(0)
     }
 
-    const diff = JSON.parse(raw)
+    const diff = JSON.parse(raw.toString('utf8')) as Diff
 
     // log the entire diff for debug purposes
     core.debug(`========== JSON DIFF ==========`)
@@ -22,7 +23,7 @@ export function loadJsonDiff() {
 
     return diff
   } catch (e) {
-    core.setFailed(e.message)
+    core.setFailed(e instanceof Error ? e.message : String(e))
     process.exit(1)
   }
 }

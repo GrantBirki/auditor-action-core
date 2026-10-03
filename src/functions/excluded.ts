@@ -1,6 +1,7 @@
-import * as core from '@actions/core'
+import type {Rule} from '../types.js'
+import * as core from '../actions.js'
 
-export async function excluded(rule, path) {
+export async function excluded(rule: Rule, path: string) {
   // if the exclude rule is not define, return false as we are not excluding anything
   if (rule?.exclude_regex === null || rule?.exclude_regex === undefined) {
     return false
