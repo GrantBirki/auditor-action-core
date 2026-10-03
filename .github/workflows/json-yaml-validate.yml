@@ -1,4 +1,6 @@
 name: json-yaml-validate 
+cache-mode: none
+
 on:
   push:
     branches:
