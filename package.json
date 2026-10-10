@@ -34,7 +34,7 @@
     "@types/node": "20.17.16",
     "@vercel/ncc": "0.38.4",
     "prettier": "3.4.2",
-    "typescript": "5.9.3"
+    "typescript": "7.0.2"
   },
   "overrides": {
     "undici": "6.28.1"
